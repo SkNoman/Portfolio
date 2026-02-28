@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Android Developer Portfolio | Cyberpunk Edition</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#28ff14",
+                        "background-light": "#f6f8f5",
+                        "background-dark": "#0a0f0a",
+                        "surface-dark": "#11230f",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .cyber-border {
+            border: 1px solid rgba(40, 255, 20, 0.3);
+            position: relative;
+        }
+        .cyber-border::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid #28ff14;
+            border-left: 2px solid #28ff14;
+        }
+        .cyber-border::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 10px;
+            height: 10px;
+            border-bottom: 2px solid #28ff14;
+            border-right: 2px solid #28ff14;
+        }
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(40, 255, 20, 0.5), 0 0 20px rgba(40, 255, 20, 0.3);
+        }
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: radial-gradient(circle, rgba(40, 255, 20, 0.05) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 selection:bg-primary selection:text-background-dark">
+<div class="relative min-h-screen w-full flex flex-col overflow-x-hidden bg-grid">
+<header class="sticky top-0 z-50 w-full border-b border-primary/20 bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl">terminal</span>
+<span class="text-xl font-bold tracking-tighter uppercase neon-glow">Dev<span class="text-primary">Node</span></span>
+</div>
+<nav class="hidden md:flex items-center gap-10">
+<a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest" href="#projects">Projects</a>
+<a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest" href="#skills">Skills</a>
+<a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest" href="#contact">Contact</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden sm:flex items-center justify-center px-6 py-2 border border-primary text-primary hover:bg-primary hover:text-background-dark transition-all duration-300 text-xs font-bold uppercase tracking-widest">
+                        Resume
+                    </button>
+<div class="size-10 rounded-full border border-primary/50 p-0.5 overflow-hidden">
+<img class="w-full h-full object-cover rounded-full" data-alt="Professional portrait of a male developer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnmyXuaGUlA-FEscg_XgzYZYjeVT6TtTrepcDQ3i3R3lXkNk_rP0wFrLnkSVIGcL1IrVF5agjA255DelO4sD6S7mCREbFN9x0Ev1gdr72myzsNui0RaCjHAILN5977R2Aga0rUB1-sgzS6g8wzi3WI6ANJrTl-mGqbBljG99utCC8U7lXLUZpO2SPMjg5MoUawfsGnWazpMcUWSpv4qzyWiSfGXCOTaYm_shSuKTsn2lCCpVeKcOUGnyrOlal_x_i_Lvfd6d8d7f8t"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1">
+<section class="relative pt-20 pb-32 px-6">
+<div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+<div class="space-y-8">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-widest uppercase">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                            Available for new projects
+                        </div>
+<h1 class="text-5xl md:text-7xl font-black leading-none tracking-tight">
+                            HI, I'M <span class="text-primary neon-glow italic">ALEX</span>,<br/>
+                            ANDROID DEVELOPER
+                        </h1>
+<p class="text-lg md:text-xl text-slate-400 max-w-xl font-light leading-relaxed">
+                            Crafting high-performance mobile experiences using <span class="text-primary font-medium">Kotlin</span> and <span class="text-primary font-medium">Jetpack Compose</span>. Architecting the future of Android with a focus on clean code and cyberpunk aesthetics.
+                        </p>
+<div class="flex flex-wrap gap-4">
+<button class="px-8 py-4 bg-primary text-background-dark font-bold uppercase tracking-widest hover:shadow-[0_0_20px_rgba(40,255,20,0.4)] transition-all">
+                                View My Work
+                            </button>
+<button class="px-8 py-4 border border-primary/50 text-slate-100 font-bold uppercase tracking-widest hover:border-primary transition-all">
+                                Get In Touch
+                            </button>
+</div>
+</div>
+<div class="relative aspect-square max-w-[500px] mx-auto lg:ml-auto">
+<div class="absolute inset-0 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="relative cyber-border p-4 bg-surface-dark/40 backdrop-blur-sm overflow-hidden h-full flex items-center justify-center">
+<div class="w-full h-full border border-primary/10 flex flex-col items-center justify-center p-8 text-center space-y-4">
+<span class="material-symbols-outlined text-primary text-8xl opacity-80">android</span>
+<div class="font-mono text-xs text-primary/60 space-y-1">
+<p>&gt; INIT SYSTEM_CORE</p>
+<p>&gt; LOADING ASSETS... 100%</p>
+<p>&gt; STATUS: OPERATIONAL</p>
+<p>&gt; LOCATION: 37.7749° N, 122.4194° W</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 px-6 bg-surface-dark/20" id="projects">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+<div>
+<h2 class="text-xs font-bold text-primary tracking-[0.4em] uppercase mb-4">// Portfolio</h2>
+<h3 class="text-4xl font-bold tracking-tight">SELECTED PROJECTS</h3>
+</div>
+<p class="text-slate-400 max-w-md text-sm">
+                            A showcase of technical architecture, fluid animations, and user-centric design in the Android ecosystem.
+                        </p>
+</div>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="group relative bg-surface-dark border border-white/5 hover:border-primary/50 transition-all duration-500">
+<div class="aspect-[16/10] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" data-alt="Modern fitness mobile app interface with dark theme and neon accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS-TUWAeWiARFORdmZpO1pfvou1cVk4wdVlIyzzHMN_QF0hFFngP--8HGlmBBCwmVEXqoFLm6L3PlXzZXJOaHrO8hYpyLix0zoIMLxqPVq1Xyty4TOzenwCijCEfzoLJiJEgkPZOpnU-21xCeEvA254fFEE7B3JXIhbDskpipAJo1gM1ORUTRyAIrNl3zh6PS4tNRLnPfhkkF3UOFpUv0KxK63UWqy42F02S5ea9DDQdmDvyK_SQg8Fjcj7wNM_dxyKfaAs3BR_4aa"/>
+</div>
+<div class="p-6">
+<div class="flex gap-2 mb-3">
+<span class="text-[10px] px-2 py-0.5 border border-primary/30 text-primary font-bold">KOTLIN</span>
+<span class="text-[10px] px-2 py-0.5 border border-primary/30 text-primary font-bold">COMPOSE</span>
+</div>
+<h4 class="text-xl font-bold mb-2">CYBERFIT APP</h4>
+<p class="text-slate-400 text-sm mb-4">AI-driven workout tracker with real-time biometric analysis via wearable integration.</p>
+<a class="inline-flex items-center text-primary text-xs font-bold uppercase tracking-widest group/link" href="#">
+                                    View Project 
+                                    <span class="material-symbols-outlined text-sm ml-1 group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+<div class="group relative bg-surface-dark border border-white/5 hover:border-primary/50 transition-all duration-500">
+<div class="aspect-[16/10] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" data-alt="Digital banking dashboard for mobile with glowing graphs and dark UI" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjAr-ul-HrILnpPj5IJzNv8ww0WD2DL9HrDxD2pRe967ZhXUbaW9MgrGGw_0mM1FdhZDU7UVgGHS47w7GrW2R1BQ4ifB6JwgTxWyz_lr-MsogU8-ZcmgK1Iv38D3lE1lfLzk0TqzydeR-CoIs2mDUDT62UsvugA3IfKcfMEgMcsJQaL0JC38n_4QtWFb2mcKVcs0NF3HqTWR0X1hIMsy_WrC50WqmnO1r9c4mwD2dSicwnDT-0dQuBWo6FvUk10GTXNEqFxNc4l8eJ"/>
+</div>
+<div class="p-6">
+<div class="flex gap-2 mb-3">
+<span class="text-[10px] px-2 py-0.5 border border-primary/30 text-primary font-bold">MVVM</span>
+<span class="text-[10px] px-2 py-0.5 border border-primary/30 text-primary font-bold">RETROFIT</span>
+</div>
+<h4 class="text-xl font-bold mb-2">NEON BANK</h4>
+<p class="text-slate-400 text-sm mb-4">Encrypted digital wallet with multi-currency support and real-time transaction notifications.</p>
+<a class="inline-flex items-center text-primary text-xs font-bold uppercase tracking-widest group/link" href="#">
+                                    View Project 
+                                    <span class="material-symbols-outlined text-sm ml-1 group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+<div class="group relative bg-surface-dark border border-white/5 hover:border-primary/50 transition-all duration-500">
+<div class="aspect-[16/10] overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" data-alt="Abstract futuristic interface with data visualization and scanning elements" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrVwbIDlwX2C0ruiYqFAOvss6LVzNYqYEZXFaKA0tmHcIGHktSfVv7MvIRUIBMsI0AVBlU8K0MeZFhqjEzr62s72mPyjxWlLP0PDGHb-HQwJxXPdLfTvUZ7ymh15H_mudQjtR6CDSGyDSJQzC4_01d-rCFcwLwe9jdaiFGw-yOakS6EBdSDmYKOJp0DFKwEZ9fI5idSwREsKQ1M0WpB2egDXroSaiVPGV6OL2re2PLey0fK6clgt5I7UmoJUoHQswNeUbmfn5bxDG2"/>
+</div>
+<div class="p-6">
+<div class="flex gap-2 mb-3">
+<span class="text-[10px] px-2 py-0.5 border border-primary/30 text-primary font-bold">ML KIT</span>
+<span class="text-[10px] px-2 py-0.5 border border-primary/30 text-primary font-bold">CAMERA X</span>
+</div>
+<h4 class="text-xl font-bold mb-2">DROIDSCANNER</h4>
+<p class="text-slate-400 text-sm mb-4">Object recognition app leveraging machine learning for real-time identification through lenses.</p>
+<a class="inline-flex items-center text-primary text-xs font-bold uppercase tracking-widest group/link" href="#">
+                                    View Project 
+                                    <span class="material-symbols-outlined text-sm ml-1 group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 px-6" id="skills">
+<div class="max-w-7xl mx-auto grid lg:grid-cols-3 gap-16">
+<div>
+<h2 class="text-xs font-bold text-primary tracking-[0.4em] uppercase mb-4">// Capabilities</h2>
+<h3 class="text-4xl font-bold tracking-tight mb-6">TECH STACK</h3>
+<p class="text-slate-400 mb-8 leading-relaxed">
+                            A specialized toolkit for modern Android development, focusing on stability, performance, and scalability.
+                        </p>
+<div class="p-6 cyber-border bg-surface-dark/40">
+<div class="flex items-center gap-4 text-primary mb-2">
+<span class="material-symbols-outlined text-3xl">terminal</span>
+<span class="font-bold tracking-widest uppercase text-xs">Runtime Stats</span>
+</div>
+<div class="space-y-4 pt-4">
+<div>
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1">
+<span>Kotlin / Core</span>
+<span>95%</span>
+</div>
+<div class="h-1 w-full bg-white/5">
+<div class="h-full bg-primary" style="width: 95%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1">
+<span>Jetpack Compose</span>
+<span>90%</span>
+</div>
+<div class="h-1 w-full bg-white/5">
+<div class="h-full bg-primary" style="width: 90%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1">
+<span>Architecture / MVVM</span>
+<span>85%</span>
+</div>
+<div class="h-1 w-full bg-white/5">
+<div class="h-full bg-primary" style="width: 85%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-6">
+<div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group">
+<span class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">code</span>
+<h5 class="font-bold mb-1">Android Studio</h5>
+<p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Primary IDE</p>
+</div>
+<div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group">
+<span class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">architecture</span>
+<h5 class="font-bold mb-1">Clean Arch</h5>
+<p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Methodology</p>
+</div>
+<div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group">
+<span class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">database</span>
+<h5 class="font-bold mb-1">SQLite / Room</h5>
+<p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Persistence</p>
+</div>
+<div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group">
+<span class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">sync</span>
+<h5 class="font-bold mb-1">Coroutines</h5>
+<p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Concurrency</p>
+</div>
+<div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group">
+<span class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">cloud_sync</span>
+<h5 class="font-bold mb-1">Retrofit</h5>
+<p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Networking</p>
+</div>
+<div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group">
+<span class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">animation</span>
+<h5 class="font-bold mb-1">MotionLayout</h5>
+<p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Animations</p>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 px-6 relative" id="contact">
+<div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
+<div class="max-w-4xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="text-xs font-bold text-primary tracking-[0.4em] uppercase mb-4">// Connection</h2>
+<h3 class="text-4xl font-bold tracking-tight mb-4">INITIATE CONTACT</h3>
+<p class="text-slate-400">Ready to build the next generation of mobile applications?</p>
+</div>
+<div class="cyber-border bg-surface-dark p-8 md:p-12">
+<form class="grid md:grid-cols-2 gap-8">
+<div class="space-y-1">
+<label class="text-[10px] font-bold uppercase tracking-widest text-primary/70">Source Name</label>
+<input class="w-full bg-background-dark border-white/10 text-white p-4 focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded-none" placeholder="John Doe" type="text"/>
+</div>
+<div class="space-y-1">
+<label class="text-[10px] font-bold uppercase tracking-widest text-primary/70">Source Email</label>
+<input class="w-full bg-background-dark border-white/10 text-white p-4 focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded-none" placeholder="john@cybermail.com" type="email"/>
+</div>
+<div class="md:col-span-2 space-y-1">
+<label class="text-[10px] font-bold uppercase tracking-widest text-primary/70">Message Data</label>
+<textarea class="w-full bg-background-dark border-white/10 text-white p-4 focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded-none" placeholder="How can we collaborate?" rows="4"></textarea>
+</div>
+<div class="md:col-span-2">
+<button class="w-full bg-primary py-4 text-background-dark font-black uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(40,255,20,0.4)] transition-all" type="submit">
+                                    TRANSMIT DATA
+                                </button>
+</div>
+</form>
+</div>
+<div class="mt-16 flex flex-wrap justify-center gap-12 grayscale opacity-50 hover:grayscale-0 transition-all duration-700">
+<a class="flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-primary" href="#">
+<span class="material-symbols-outlined text-lg">public</span> GitHub
+                        </a>
+<a class="flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-primary" href="#">
+<span class="material-symbols-outlined text-lg">link</span> LinkedIn
+                        </a>
+<a class="flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-primary" href="#">
+<span class="material-symbols-outlined text-lg">share</span> Twitter
+                        </a>
+</div>
+</div>
+</section>
+</main>
+<footer class="border-t border-primary/20 bg-surface-dark py-12 px-6">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-slate-500 text-xs font-bold uppercase tracking-widest">
+<div class="flex items-center gap-4">
+<span class="text-primary">© 2024</span>
+<span>Designed for the Future</span>
+</div>
+<div class="flex items-center gap-8">
+<a class="hover:text-primary transition-colors" href="#">Privacy Protocol</a>
+<a class="hover:text-primary transition-colors" href="#">Security Specs</a>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">wifi</span>
+<span>System Online</span>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

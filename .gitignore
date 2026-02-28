@@ -1,0 +1,5 @@
+node_modules/
+portfolio.db
+uploads/
+*.log
+.env
