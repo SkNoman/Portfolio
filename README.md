@@ -57,7 +57,7 @@ You'll see:
 | 🛠️ Project Dashboard (admin) | http://localhost:3000/dashboard |
 | ✏️ Edit Profile (admin) | http://localhost:3000/profile |
 
-**Admin password:** `admin123`
+**Admin password:** `hahaha`
 (You can change this in `dashboard.html` and `profile.html` — search for `ADMIN_PASSWORD`)
 
 ---
