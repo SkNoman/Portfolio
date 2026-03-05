@@ -435,7 +435,7 @@
 
     <script>
         const ADMIN_PASSWORD = 'admin123'; // Change this!
-        const LOCAL_ADMIN_URL = 'http://localhost:3333';
+        const LOCAL_ADMIN_URL = 'http://127.0.0.1:3333';
         let allProjects = [];
         let techStack = [];
         let deleteTargetId = null;
@@ -443,13 +443,20 @@
 
         async function checkLocalAdmin() {
             try {
-                const res = await fetch(`${LOCAL_ADMIN_URL}/save`, { method: 'OPTIONS' });
+                // Use a short timeout for the check
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
+                const res = await fetch(`${LOCAL_ADMIN_URL}/save`, {
+                    method: 'OPTIONS',
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
                 localAdminActive = true;
                 const status = document.getElementById('sync-status');
                 status.className = 'flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest';
                 status.innerHTML = '<span class="size-2 rounded-full bg-primary animate-pulse"></span> Local Sync: Active';
-                console.log('Local Admin Server detected');
-            } catch {
+                console.log('Local Admin Server detected at 127.0.0.1');
+            } catch (err) {
                 localAdminActive = false;
                 console.warn('Local Admin Server NOT detected. Auto-sync disabled.');
             }
@@ -477,11 +484,15 @@
                 projects: JSON.parse(localStorage.getItem('portfolio_projects') || '[]')
             };
             try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout for save
                 const res = await fetch(`${LOCAL_ADMIN_URL}/save`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(data),
+                    signal: controller.signal
                 });
+                clearTimeout(timeoutId);
                 if (res.ok) console.log('✅ Auto-synced to local file');
             } catch (err) {
                 console.error('Failed to sync to local file', err);
@@ -710,86 +721,112 @@
         });
 
         // ── Add / Update Project ──────────────────────────────────────────────────
+        // ── Add / Update Project ──────────────────────────────────────────────────
         document.getElementById('add-project-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
             const label = document.getElementById('submit-label');
-            const editId = parseInt(document.getElementById('edit-project-id').value);
+            const originalLabel = label.textContent;
 
-            const title = document.getElementById('proj-title').value.trim();
-            if (!title) return;
+            try {
+                label.textContent = 'Deploying...';
+                btn.disabled = true;
 
-            label.textContent = 'Saving...';
-            btn.disabled = true;
+                const editId = document.getElementById('edit-project-id').value ? parseInt(document.getElementById('edit-project-id').value) : null;
+                const title = document.getElementById('proj-title').value.trim();
+                if (!title) return;
 
-            const projects = getProjects();
+                const projects = getProjects();
 
-            if (editId) {
-                const idx = projects.findIndex(p => p.id === editId);
-                if (idx !== -1) {
-                    let finalImageUrl = projects[idx].image_url;
+                if (editId) {
+                    const idx = projects.findIndex(p => p.id === editId);
+                    if (idx !== -1) {
+                        let finalImageUrl = projects[idx].image_url;
 
-                    if (selectedImageBase64) {
-                        if (localAdminActive) {
+                        if (selectedImageBase64) {
+                            if (localAdminActive) {
+                                try {
+                                    const controller = new AbortController();
+                                    const timeoutId = setTimeout(() => controller.abort(), 15000);
+                                    const res = await fetch(`${LOCAL_ADMIN_URL}/upload`, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ fileName: `proj_${editId}`, base64: selectedImageBase64 }),
+                                        signal: controller.signal
+                                    });
+                                    clearTimeout(timeoutId);
+                                    const result = await res.json();
+                                    if (result.url) finalImageUrl = result.url;
+                                } catch (err) {
+                                    console.error('Image upload failed', err);
+                                    finalImageUrl = selectedImageBase64;
+                                }
+                            } else {
+                                finalImageUrl = selectedImageBase64;
+                            }
+                        }
+
+                        projects[idx] = {
+                            ...projects[idx],
+                            title,
+                            description: document.getElementById('proj-desc').value.trim(),
+                            link: document.getElementById('proj-link').value.trim(),
+                            status: document.getElementById('proj-status').value,
+                            tech_stack: [...techStack],
+                            image_url: finalImageUrl,
+                        };
+                        saveProjects(projects);
+                        await syncToLocal();
+                        showToast(localAdminActive ? '✅ Project updated & saved to disk!' : '✅ Project updated locally!', 'success');
+                    }
+                } else {
+                    const newId = nextId(projects);
+                    let finalImageUrl = selectedImageBase64 || '';
+
+                    if (selectedImageBase64 && localAdminActive) {
+                        try {
+                            const controller = new AbortController();
+                            const timeoutId = setTimeout(() => controller.abort(), 15000);
                             const res = await fetch(`${LOCAL_ADMIN_URL}/upload`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ fileName: `proj_${editId}`, base64: selectedImageBase64 })
+                                body: JSON.stringify({ fileName: `proj_${newId}`, base64: selectedImageBase64 }),
+                                signal: controller.signal
                             });
+                            clearTimeout(timeoutId);
                             const result = await res.json();
                             if (result.url) finalImageUrl = result.url;
-                        } else {
+                        } catch (err) {
+                            console.error('Image upload failed', err);
                             finalImageUrl = selectedImageBase64;
                         }
                     }
 
-                    projects[idx] = {
-                        ...projects[idx],
+                    const newProject = {
+                        id: newId,
                         title,
                         description: document.getElementById('proj-desc').value.trim(),
                         link: document.getElementById('proj-link').value.trim(),
                         status: document.getElementById('proj-status').value,
                         tech_stack: [...techStack],
                         image_url: finalImageUrl,
+                        created_at: new Date().toISOString(),
                     };
+                    projects.unshift(newProject);
                     saveProjects(projects);
                     await syncToLocal();
-                    showToast(localAdminActive ? '✅ Project updated & saved to disk!' : '✅ Project updated locally!', 'success');
-                }
-            } else {
-                const newId = nextId(projects);
-                let finalImageUrl = selectedImageBase64 || '';
-
-                if (selectedImageBase64 && localAdminActive) {
-                    const res = await fetch(`${LOCAL_ADMIN_URL}/upload`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ fileName: `proj_${newId}`, base64: selectedImageBase64 })
-                    });
-                    const result = await res.json();
-                    if (result.url) finalImageUrl = result.url;
+                    showToast(localAdminActive ? '✅ Deployed & saved to disk!' : '✅ Deployed to local browser!', 'success');
                 }
 
-                const newProject = {
-                    id: newId,
-                    title,
-                    description: document.getElementById('proj-desc').value.trim(),
-                    link: document.getElementById('proj-link').value.trim(),
-                    status: document.getElementById('proj-status').value,
-                    tech_stack: [...techStack],
-                    image_url: finalImageUrl,
-                    created_at: new Date().toISOString(),
-                };
-                projects.unshift(newProject);
-                saveProjects(projects);
-                await syncToLocal();
-                showToast(localAdminActive ? '✅ Deployed & saved to disk!' : '✅ Deployed to local browser!', 'success');
+                resetForm();
+                loadProjects();
+            } catch (err) {
+                console.error('Save error', err);
+                showToast('❌ Sync Error: ' + err.message, 'error');
+            } finally {
+                label.textContent = originalLabel;
+                btn.disabled = false;
             }
-
-            resetForm();
-            loadProjects();
-            label.textContent = 'Deploy to Portfolio';
-            btn.disabled = false;
         });
 
         // ── Edit Project ──────────────────────────────────────────────────────────

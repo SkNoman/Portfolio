@@ -395,12 +395,18 @@
 
     <script>
         const ADMIN_PASSWORD = 'admin123'; // Change this!
-        const LOCAL_ADMIN_URL = 'http://localhost:3333';
+        const LOCAL_ADMIN_URL = 'http://127.0.0.1:3333';
         let localAdminActive = false;
 
         async function checkLocalAdmin() {
             try {
-                const res = await fetch(`${LOCAL_ADMIN_URL}/save`, { method: 'OPTIONS' });
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2000);
+                const res = await fetch(`${LOCAL_ADMIN_URL}/save`, {
+                    method: 'OPTIONS',
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
                 localAdminActive = true;
                 const status = document.getElementById('sync-status');
                 status.className = 'flex items-center gap-2 px-3 py-1.5 rounded bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest';
@@ -430,14 +436,26 @@
                 projects: JSON.parse(localStorage.getItem('portfolio_projects') || '[]')
             };
             try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
                 await fetch(`${LOCAL_ADMIN_URL}/save`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(data),
+                    signal: controller.signal
                 });
+                clearTimeout(timeoutId);
             } catch (err) {
                 console.error('Local sync failed', err);
             }
+        }
+
+        // ── localStorage helpers ───────────────────────────────────────────────────────
+        function getProfile() {
+            try { return JSON.parse(localStorage.getItem('portfolio_profile') || '{}'); } catch { return {}; }
+        }
+        function saveProfile(data) {
+            localStorage.setItem('portfolio_profile', JSON.stringify(data));
         }
 
         // ── Auth ────────────────────────────────────────────────────────────────────────
@@ -540,28 +558,35 @@
             const btn1 = document.getElementById('save-btn');
             const btn2 = document.getElementById('save-btn-bottom');
             const label = document.getElementById('save-btn-label');
-            label.textContent = 'Saving...';
-            btn1.disabled = btn2.disabled = true;
+            const originalLabel = label.textContent;
 
-            const existing = getProfile();
-            const payload = {
-                ...existing,
-                name: document.getElementById('prof-name').value.trim(),
-                role: document.getElementById('prof-role').value.trim(),
-                bio: document.getElementById('prof-bio').value.trim(),
-                email: document.getElementById('prof-email').value.trim(),
-                github: document.getElementById('prof-github').value.trim(),
-                linkedin: document.getElementById('prof-linkedin').value.trim(),
-                twitter: document.getElementById('prof-twitter').value.trim(),
-                resume_url: document.getElementById('prof-resume-url').value.trim(),
-            };
+            try {
+                label.textContent = 'Saving...';
+                btn1.disabled = btn2.disabled = true;
 
-            saveProfile(payload);
-            await syncToLocal();
-            showToast(localAdminActive ? '✅ Profile updated & saved to disk!' : '✅ Profile updated locally!', 'success');
+                const existing = getProfile();
+                const payload = {
+                    ...existing,
+                    name: document.getElementById('prof-name').value.trim(),
+                    role: document.getElementById('prof-role').value.trim(),
+                    bio: document.getElementById('prof-bio').value.trim(),
+                    email: document.getElementById('prof-email').value.trim(),
+                    github: document.getElementById('prof-github').value.trim(),
+                    linkedin: document.getElementById('prof-linkedin').value.trim(),
+                    twitter: document.getElementById('prof-twitter').value.trim(),
+                    resume_url: document.getElementById('prof-resume-url').value.trim(),
+                };
 
-            label.textContent = 'Save Profile';
-            btn1.disabled = btn2.disabled = false;
+                saveProfile(payload);
+                await syncToLocal();
+                showToast(localAdminActive ? '✅ Profile updated & saved to disk!' : '✅ Profile updated locally!', 'success');
+            } catch (err) {
+                console.error('Save error', err);
+                showToast('❌ Sync Error: ' + err.message, 'error');
+            } finally {
+                label.textContent = originalLabel || 'Save Profile';
+                btn1.disabled = btn2.disabled = false;
+            }
         }
 
         document.getElementById('save-btn').addEventListener('click', doSaveProfile);
@@ -590,11 +615,15 @@
 
                 if (localAdminActive) {
                     try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 15000);
                         const res = await fetch(`${LOCAL_ADMIN_URL}/upload`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ fileName: 'avatar', base64: base64 })
+                            body: JSON.stringify({ fileName: 'avatar', base64: base64 }),
+                            signal: controller.signal
                         });
+                        clearTimeout(timeoutId);
                         const result = await res.json();
                         if (result.url) finalAvatarUrl = result.url;
                     } catch (err) {
