@@ -1,5 +1,5 @@
 {
-  "profile": {
+    "profile": {
     "name": "Noman",
     "role": "Android Developer",
     "bio": "Try to become a man of value",
@@ -11,62 +11,17 @@
   },
   "projects": [
     {
-      "id": 7,
-      "title": "fgsdfsd",
-      "description": "fsfsfs",
-      "link": "",
-      "status": "LIVE",
-      "tech_stack": [
-        "fs"
-      ],
-      "image_url": "",
-      "created_at": "2026-03-05T05:07:27.256Z"
-    },
-    {
-      "id": 6,
-      "title": "Noman",
-      "description": "Test noman",
-      "link": "",
-      "status": "BETA",
-      "tech_stack": [
-        "json"
-      ],
-      "image_url": "",
-      "created_at": "2026-03-05T05:05:21.916Z"
-    },
-    {
-      "id": 5,
-      "title": "Image Sync App",
-      "description": "Checking disk image upload",
-      "link": "",
-      "status": "LIVE",
-      "tech_stack": [],
-      "image_url": "",
-      "created_at": "2026-03-05T05:01:26.239Z"
-    },
-    {
-      "id": 4,
-      "title": "Auto Sync Test",
-      "description": "Verifying direct disk save",
-      "link": "",
-      "status": "LIVE",
-      "tech_stack": [
-        "Node.js"
-      ],
-      "image_url": "",
-      "created_at": "2026-03-05T04:55:47.825Z"
-    },
-    {
       "id": 1,
-      "title": "Test App",
-      "description": "A test project",
-      "link": "",
+      "title": "TTBoost",
+      "description": "Get TikTok Likes Followers Instantly",
+      "link": "https://play.google.com/store/apps/details?id=com.ttboost.tik.tok.followers.likes",
       "status": "LIVE",
       "tech_stack": [
-        "Kotlin"
+        "Android",
+        "Jetpack Compose"
       ],
       "image_url": "",
-      "created_at": "2026-03-05T04:10:07.647Z"
+      "created_at": "2026-03-05T06:42:42.766Z"
     }
   ]
 }
