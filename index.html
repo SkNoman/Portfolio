@@ -1,371 +1,514 @@
 <!DOCTYPE html>
 <html class="dark" lang="en">
+
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title id="page-title">Android Developer Portfolio</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title id="page-title">Android Developer Portfolio</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
     tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                colors: {
-                    "primary": "#28ff14",
-                    "background-light": "#f6f8f5",
-                    "background-dark": "#0a0f0a",
-                    "surface-dark": "#11230f",
-                },
-                fontFamily: { "display": ["Space Grotesk", "sans-serif"] },
-                borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
-            },
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#28ff14",
+            "background-light": "#f6f8f5",
+            "background-dark": "#0a0f0a",
+            "surface-dark": "#11230f",
+          },
+          fontFamily: { "display": ["Space Grotesk", "sans-serif"] },
+          borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
         },
+      },
     }
-</script>
-<style>
-    .cyber-border { border: 1px solid rgba(40,255,20,0.3); position: relative; }
-    .cyber-border::before { content:''; position:absolute; top:-1px; left:-1px; width:10px; height:10px; border-top:2px solid #28ff14; border-left:2px solid #28ff14; }
-    .cyber-border::after  { content:''; position:absolute; bottom:-1px; right:-1px; width:10px; height:10px; border-bottom:2px solid #28ff14; border-right:2px solid #28ff14; }
-    .neon-glow { text-shadow: 0 0 10px rgba(40,255,20,0.5), 0 0 20px rgba(40,255,20,0.3); }
-    .bg-grid { background-size:40px 40px; background-image:radial-gradient(circle, rgba(40,255,20,0.05) 1px, transparent 1px); }
-    .toast { position:fixed; bottom:2rem; right:2rem; z-index:9999; padding:1rem 1.5rem; border-radius:0.5rem; font-weight:700; font-size:0.875rem; transform:translateY(4rem); opacity:0; transition:all 0.3s ease; pointer-events:none; }
-    .toast.show { transform:translateY(0); opacity:1; }
-    .toast.success { background:#28ff14; color:#0a0f0a; }
-    .toast.error { background:#ef4444; color:#fff; }
-    .project-card-skeleton { animation: pulse 1.5s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
-</style>
+  </script>
+  <style>
+    .cyber-border {
+      border: 1px solid rgba(40, 255, 20, 0.3);
+      position: relative;
+    }
+
+    .cyber-border::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      width: 10px;
+      height: 10px;
+      border-top: 2px solid #28ff14;
+      border-left: 2px solid #28ff14;
+    }
+
+    .cyber-border::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 10px;
+      height: 10px;
+      border-bottom: 2px solid #28ff14;
+      border-right: 2px solid #28ff14;
+    }
+
+    .neon-glow {
+      text-shadow: 0 0 10px rgba(40, 255, 20, 0.5), 0 0 20px rgba(40, 255, 20, 0.3);
+    }
+
+    .bg-grid {
+      background-size: 40px 40px;
+      background-image: radial-gradient(circle, rgba(40, 255, 20, 0.05) 1px, transparent 1px);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 9999;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      font-size: 0.875rem;
+      transform: translateY(4rem);
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      background: #28ff14;
+      color: #0a0f0a;
+    }
+
+    .toast.error {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .project-card-skeleton {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .5
+      }
+    }
+  </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 selection:bg-primary selection:text-background-dark">
-<div class="relative min-h-screen w-full flex flex-col overflow-x-hidden bg-grid">
 
-<!-- ── NAV ─────────────────────────────────────────────────────────────── -->
-<header class="sticky top-0 z-50 w-full border-b border-primary/20 bg-background-dark/80 backdrop-blur-md">
-  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <span class="material-symbols-outlined text-primary text-3xl">terminal</span>
-      <span class="text-xl font-bold tracking-tighter uppercase neon-glow">Dev<span class="text-primary">Node</span></span>
-    </div>
-    <nav class="hidden md:flex items-center gap-10">
-      <a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest" href="#projects">Projects</a>
-      <a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest" href="#skills">Skills</a>
-      <a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest" href="#contact">Contact</a>
-    </nav>
-    <div class="flex items-center gap-4">
-      <a id="resume-btn" href="#" target="_blank" class="hidden sm:flex items-center justify-center px-6 py-2 border border-primary text-primary hover:bg-primary hover:text-background-dark transition-all duration-300 text-xs font-bold uppercase tracking-widest">
-        Resume
-      </a>
-      <div class="size-10 rounded-full border border-primary/50 p-0.5 overflow-hidden">
-        <img id="header-avatar" class="w-full h-full object-cover rounded-full" src="https://placehold.co/40x40/11230f/28ff14?text=DEV" alt="Profile photo"/>
-      </div>
-    </div>
-  </div>
-</header>
+<body
+  class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 selection:bg-primary selection:text-background-dark">
+  <div class="relative min-h-screen w-full flex flex-col overflow-x-hidden bg-grid">
 
-<main class="flex-1">
-
-  <!-- ── HERO ───────────────────────────────────────────────────────────── -->
-  <section class="relative pt-20 pb-32 px-6">
-    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-      <div class="space-y-8">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-widest uppercase">
-          <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-          </span>
-          Available for new projects
+    <!-- ── NAV ─────────────────────────────────────────────────────────────── -->
+    <header class="sticky top-0 z-50 w-full border-b border-primary/20 bg-background-dark/80 backdrop-blur-md">
+      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary text-3xl">terminal</span>
+          <span class="text-xl font-bold tracking-tighter uppercase neon-glow">Dev<span
+              class="text-primary">Node</span></span>
         </div>
-        <h1 class="text-5xl md:text-7xl font-black leading-none tracking-tight">
-          HI, I'M <span id="hero-name" class="text-primary neon-glow italic">ALEX</span>,<br/>
-          <span id="hero-role">ANDROID DEVELOPER</span>
-        </h1>
-        <p id="hero-bio" class="text-lg md:text-xl text-slate-400 max-w-xl font-light leading-relaxed">
-          Crafting high-performance mobile experiences using <span class="text-primary font-medium">Kotlin</span> and <span class="text-primary font-medium">Jetpack Compose</span>.
-        </p>
-        <div class="flex flex-wrap gap-4">
-          <a href="#projects" class="px-8 py-4 bg-primary text-background-dark font-bold uppercase tracking-widest hover:shadow-[0_0_20px_rgba(40,255,20,0.4)] transition-all">
-            View My Work
+        <nav class="hidden md:flex items-center gap-10">
+          <a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest"
+            href="#projects">Projects</a>
+          <a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest"
+            href="#skills">Skills</a>
+          <a class="text-sm font-medium hover:text-primary transition-colors uppercase tracking-widest"
+            href="#contact">Contact</a>
+        </nav>
+        <div class="flex items-center gap-4">
+          <a id="resume-btn" href="#" target="_blank"
+            class="hidden sm:flex items-center justify-center px-6 py-2 border border-primary text-primary hover:bg-primary hover:text-background-dark transition-all duration-300 text-xs font-bold uppercase tracking-widest">
+            Resume
           </a>
-          <a href="#contact" class="px-8 py-4 border border-primary/50 text-slate-100 font-bold uppercase tracking-widest hover:border-primary transition-all">
-            Get In Touch
-          </a>
+          <div class="size-10 rounded-full border border-primary/50 p-0.5 overflow-hidden">
+            <img id="header-avatar" class="w-full h-full object-cover rounded-full"
+              src="https://placehold.co/40x40/11230f/28ff14?text=DEV" alt="Profile photo" />
+          </div>
         </div>
       </div>
-      <div class="relative aspect-square max-w-[500px] mx-auto lg:ml-auto">
-        <div class="absolute inset-0 bg-primary/5 rounded-full blur-3xl"></div>
-        <div class="relative cyber-border p-4 bg-surface-dark/40 backdrop-blur-sm overflow-hidden h-full flex items-center justify-center">
-          <div id="hero-avatar-box" class="w-full h-full border border-primary/10 flex flex-col items-center justify-center p-8 text-center space-y-4">
-            <span class="material-symbols-outlined text-primary text-8xl opacity-80">android</span>
-            <div class="font-mono text-xs text-primary/60 space-y-1">
-              <p>&gt; INIT SYSTEM_CORE</p>
-              <p>&gt; LOADING ASSETS... 100%</p>
-              <p>&gt; STATUS: OPERATIONAL</p>
+    </header>
+
+    <main class="flex-1">
+
+      <!-- ── HERO ───────────────────────────────────────────────────────────── -->
+      <section class="relative pt-20 pb-32 px-6">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+          <div class="space-y-8">
+            <div
+              class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-widest uppercase">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+              </span>
+              Available for new projects
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black leading-none tracking-tight">
+              HI, I'M <span id="hero-name" class="text-primary neon-glow italic">ALEX</span>,<br />
+              <span id="hero-role">ANDROID DEVELOPER</span>
+            </h1>
+            <p id="hero-bio" class="text-lg md:text-xl text-slate-400 max-w-xl font-light leading-relaxed">
+              Crafting high-performance mobile experiences using <span class="text-primary font-medium">Kotlin</span>
+              and <span class="text-primary font-medium">Jetpack Compose</span>.
+            </p>
+            <div class="flex flex-wrap gap-4">
+              <a href="#projects"
+                class="px-8 py-4 bg-primary text-background-dark font-bold uppercase tracking-widest hover:shadow-[0_0_20px_rgba(40,255,20,0.4)] transition-all">
+                View My Work
+              </a>
+              <a href="#contact"
+                class="px-8 py-4 border border-primary/50 text-slate-100 font-bold uppercase tracking-widest hover:border-primary transition-all">
+                Get In Touch
+              </a>
+            </div>
+          </div>
+          <div class="relative aspect-square max-w-[500px] mx-auto lg:ml-auto">
+            <div class="absolute inset-0 bg-primary/5 rounded-full blur-3xl"></div>
+            <div
+              class="relative cyber-border p-4 bg-surface-dark/40 backdrop-blur-sm overflow-hidden h-full flex items-center justify-center">
+              <div id="hero-avatar-box"
+                class="w-full h-full border border-primary/10 flex flex-col items-center justify-center p-8 text-center space-y-4">
+                <span class="material-symbols-outlined text-primary text-8xl opacity-80">android</span>
+                <div class="font-mono text-xs text-primary/60 space-y-1">
+                  <p>&gt; INIT SYSTEM_CORE</p>
+                  <p>&gt; LOADING ASSETS... 100%</p>
+                  <p>&gt; STATUS: OPERATIONAL</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- ── PROJECTS ───────────────────────────────────────────────────────── -->
-  <section class="py-24 px-6 bg-surface-dark/20" id="projects">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-        <div>
-          <h2 class="text-xs font-bold text-primary tracking-[0.4em] uppercase mb-4">// Portfolio</h2>
-          <h3 class="text-4xl font-bold tracking-tight">SELECTED PROJECTS</h3>
-        </div>
-        <p class="text-slate-400 max-w-md text-sm">
-          A showcase of technical architecture, fluid animations, and user-centric design in the Android ecosystem.
-        </p>
-      </div>
-      <!-- Projects Grid — rendered by JS -->
-      <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Skeleton loaders -->
-        <div class="project-card-skeleton bg-surface-dark border border-white/5 h-64 rounded"></div>
-        <div class="project-card-skeleton bg-surface-dark border border-white/5 h-64 rounded"></div>
-        <div class="project-card-skeleton bg-surface-dark border border-white/5 h-64 rounded"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── SKILLS ─────────────────────────────────────────────────────────── -->
-  <section class="py-24 px-6" id="skills">
-    <div class="max-w-7xl mx-auto grid lg:grid-cols-3 gap-16">
-      <div>
-        <h2 class="text-xs font-bold text-primary tracking-[0.4em] uppercase mb-4">// Capabilities</h2>
-        <h3 class="text-4xl font-bold tracking-tight mb-6">TECH STACK</h3>
-        <p class="text-slate-400 mb-8 leading-relaxed">A specialized toolkit for modern Android development, focusing on stability, performance, and scalability.</p>
-        <div class="p-6 cyber-border bg-surface-dark/40">
-          <div class="flex items-center gap-4 text-primary mb-2">
-            <span class="material-symbols-outlined text-3xl">terminal</span>
-            <span class="font-bold tracking-widest uppercase text-xs">Runtime Stats</span>
-          </div>
-          <div class="space-y-4 pt-4">
+      <!-- ── PROJECTS ───────────────────────────────────────────────────────── -->
+      <section class="py-24 px-6 bg-surface-dark/20" id="projects">
+        <div class="max-w-7xl mx-auto">
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
             <div>
-              <div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1"><span>Kotlin / Core</span><span>95%</span></div>
-              <div class="h-1 w-full bg-white/5"><div class="h-full bg-primary" style="width:95%"></div></div>
+              <h2 class="text-xs font-bold text-primary tracking-[0.4em] uppercase mb-4">// Portfolio</h2>
+              <h3 class="text-4xl font-bold tracking-tight">SELECTED PROJECTS</h3>
             </div>
-            <div>
-              <div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1"><span>Jetpack Compose</span><span>90%</span></div>
-              <div class="h-1 w-full bg-white/5"><div class="h-full bg-primary" style="width:90%"></div></div>
+            <p class="text-slate-400 max-w-md text-sm">
+              A showcase of technical architecture, fluid animations, and user-centric design in the Android ecosystem.
+            </p>
+          </div>
+          <!-- Projects Grid — rendered by JS -->
+          <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Skeleton loaders -->
+            <div class="project-card-skeleton bg-surface-dark border border-white/5 h-64 rounded"></div>
+            <div class="project-card-skeleton bg-surface-dark border border-white/5 h-64 rounded"></div>
+            <div class="project-card-skeleton bg-surface-dark border border-white/5 h-64 rounded"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── SKILLS ─────────────────────────────────────────────────────────── -->
+      <section class="py-24 px-6" id="skills">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-3 gap-16">
+          <div>
+            <h2 class="text-xs font-bold text-primary tracking-[0.4em] uppercase mb-4">// Capabilities</h2>
+            <h3 class="text-4xl font-bold tracking-tight mb-6">TECH STACK</h3>
+            <p class="text-slate-400 mb-8 leading-relaxed">A specialized toolkit for modern Android development,
+              focusing on stability, performance, and scalability.</p>
+            <div class="p-6 cyber-border bg-surface-dark/40">
+              <div class="flex items-center gap-4 text-primary mb-2">
+                <span class="material-symbols-outlined text-3xl">terminal</span>
+                <span class="font-bold tracking-widest uppercase text-xs">Runtime Stats</span>
+              </div>
+              <div class="space-y-4 pt-4">
+                <div>
+                  <div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1"><span>Kotlin /
+                      Core</span><span>95%</span></div>
+                  <div class="h-1 w-full bg-white/5">
+                    <div class="h-full bg-primary" style="width:95%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1"><span>Jetpack
+                      Compose</span><span>90%</span></div>
+                  <div class="h-1 w-full bg-white/5">
+                    <div class="h-full bg-primary" style="width:90%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1">
+                    <span>Architecture / MVVM</span><span>85%</span></div>
+                  <div class="h-1 w-full bg-white/5">
+                    <div class="h-full bg-primary" style="width:85%"></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1"><span>Architecture / MVVM</span><span>85%</span></div>
-              <div class="h-1 w-full bg-white/5"><div class="h-full bg-primary" style="width:85%"></div></div>
+          </div>
+          <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-6">
+            <div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group">
+              <span
+                class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">code</span>
+              <h5 class="font-bold mb-1">Android Studio</h5>
+              <p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Primary IDE</p>
+            </div>
+            <div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group">
+              <span
+                class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">architecture</span>
+              <h5 class="font-bold mb-1">Clean Arch</h5>
+              <p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Methodology</p>
+            </div>
+            <div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group">
+              <span
+                class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">database</span>
+              <h5 class="font-bold mb-1">SQLite / Room</h5>
+              <p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Persistence</p>
+            </div>
+            <div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group">
+              <span
+                class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">sync</span>
+              <h5 class="font-bold mb-1">Coroutines</h5>
+              <p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Concurrency</p>
+            </div>
+            <div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group">
+              <span
+                class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">cloud_sync</span>
+              <h5 class="font-bold mb-1">Retrofit</h5>
+              <p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Networking</p>
+            </div>
+            <div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group">
+              <span
+                class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">animation</span>
+              <h5 class="font-bold mb-1">MotionLayout</h5>
+              <p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Animations</p>
             </div>
           </div>
         </div>
-      </div>
-      <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-6">
-        <div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group"><span class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">code</span><h5 class="font-bold mb-1">Android Studio</h5><p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Primary IDE</p></div>
-        <div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group"><span class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">architecture</span><h5 class="font-bold mb-1">Clean Arch</h5><p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Methodology</p></div>
-        <div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group"><span class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">database</span><h5 class="font-bold mb-1">SQLite / Room</h5><p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Persistence</p></div>
-        <div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group"><span class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">sync</span><h5 class="font-bold mb-1">Coroutines</h5><p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Concurrency</p></div>
-        <div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group"><span class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">cloud_sync</span><h5 class="font-bold mb-1">Retrofit</h5><p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Networking</p></div>
-        <div class="p-8 border border-white/5 bg-surface-dark/40 hover:border-primary/30 transition-colors group"><span class="material-symbols-outlined text-primary text-4xl mb-4 group-hover:scale-110 transition-transform block">animation</span><h5 class="font-bold mb-1">MotionLayout</h5><p class="text-xs text-slate-500 uppercase tracking-widest font-medium">Animations</p></div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- ── CONTACT ────────────────────────────────────────────────────────── -->
-  <section class="py-24 px-6 relative" id="contact">
-    <div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
-    <div class="max-w-4xl mx-auto">
-      <div class="text-center mb-16">
-        <h2 class="text-xs font-bold text-primary tracking-[0.4em] uppercase mb-4">// Connection</h2>
-        <h3 class="text-4xl font-bold tracking-tight mb-4">INITIATE CONTACT</h3>
-        <p class="text-slate-400">Ready to build the next generation of mobile applications?</p>
-      </div>
-      <div class="cyber-border bg-surface-dark p-8 md:p-12">
-        <form id="contact-form" class="grid md:grid-cols-2 gap-8">
-          <div class="space-y-1">
-            <label class="text-[10px] font-bold uppercase tracking-widest text-primary/70">Source Name</label>
-            <input id="contact-name" class="w-full bg-background-dark border border-white/10 text-white p-4 focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded-none outline-none" placeholder="John Doe" type="text" required/>
+      <!-- ── CONTACT ────────────────────────────────────────────────────────── -->
+      <section class="py-24 px-6 relative" id="contact">
+        <div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto">
+          <div class="text-center mb-16">
+            <h2 class="text-xs font-bold text-primary tracking-[0.4em] uppercase mb-4">// Connection</h2>
+            <h3 class="text-4xl font-bold tracking-tight mb-4">INITIATE CONTACT</h3>
+            <p class="text-slate-400">Ready to build the next generation of mobile applications?</p>
           </div>
-          <div class="space-y-1">
-            <label class="text-[10px] font-bold uppercase tracking-widest text-primary/70">Source Email</label>
-            <input id="contact-email" class="w-full bg-background-dark border border-white/10 text-white p-4 focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded-none outline-none" placeholder="john@email.com" type="email" required/>
+          <div class="cyber-border bg-surface-dark p-8 md:p-12">
+            <form id="contact-form" class="grid md:grid-cols-2 gap-8">
+              <div class="space-y-1">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-primary/70">Source Name</label>
+                <input id="contact-name"
+                  class="w-full bg-background-dark border border-white/10 text-white p-4 focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded-none outline-none"
+                  placeholder="John Doe" type="text" required />
+              </div>
+              <div class="space-y-1">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-primary/70">Source Email</label>
+                <input id="contact-email"
+                  class="w-full bg-background-dark border border-white/10 text-white p-4 focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded-none outline-none"
+                  placeholder="john@email.com" type="email" required />
+              </div>
+              <div class="md:col-span-2 space-y-1">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-primary/70">Message Data</label>
+                <textarea id="contact-message"
+                  class="w-full bg-background-dark border border-white/10 text-white p-4 focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded-none outline-none"
+                  placeholder="How can we collaborate?" rows="4" required></textarea>
+              </div>
+              <div class="md:col-span-2">
+                <button id="contact-btn"
+                  class="w-full bg-primary py-4 text-background-dark font-black uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(40,255,20,0.4)] transition-all"
+                  type="submit">
+                  TRANSMIT DATA
+                </button>
+              </div>
+            </form>
           </div>
-          <div class="md:col-span-2 space-y-1">
-            <label class="text-[10px] font-bold uppercase tracking-widest text-primary/70">Message Data</label>
-            <textarea id="contact-message" class="w-full bg-background-dark border border-white/10 text-white p-4 focus:ring-1 focus:ring-primary focus:border-primary transition-all rounded-none outline-none" placeholder="How can we collaborate?" rows="4" required></textarea>
+          <!-- Social Links -->
+          <div id="social-links"
+            class="mt-16 flex flex-wrap justify-center gap-12 grayscale opacity-50 hover:grayscale-0 transition-all duration-700">
+            <a id="social-github"
+              class="flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-primary hidden"
+              href="#" target="_blank">
+              <span class="material-symbols-outlined text-lg">public</span> GitHub
+            </a>
+            <a id="social-linkedin"
+              class="flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-primary hidden"
+              href="#" target="_blank">
+              <span class="material-symbols-outlined text-lg">link</span> LinkedIn
+            </a>
+            <a id="social-twitter"
+              class="flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-primary hidden"
+              href="#" target="_blank">
+              <span class="material-symbols-outlined text-lg">share</span> Twitter
+            </a>
           </div>
-          <div class="md:col-span-2">
-            <button id="contact-btn" class="w-full bg-primary py-4 text-background-dark font-black uppercase tracking-[0.2em] hover:shadow-[0_0_20px_rgba(40,255,20,0.4)] transition-all" type="submit">
-              TRANSMIT DATA
-            </button>
-          </div>
-        </form>
-      </div>
-      <!-- Social Links -->
-      <div id="social-links" class="mt-16 flex flex-wrap justify-center gap-12 grayscale opacity-50 hover:grayscale-0 transition-all duration-700">
-        <a id="social-github" class="flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-primary hidden" href="#" target="_blank">
-          <span class="material-symbols-outlined text-lg">public</span> GitHub
-        </a>
-        <a id="social-linkedin" class="flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-primary hidden" href="#" target="_blank">
-          <span class="material-symbols-outlined text-lg">link</span> LinkedIn
-        </a>
-        <a id="social-twitter" class="flex items-center gap-2 text-sm font-bold tracking-widest uppercase hover:text-primary hidden" href="#" target="_blank">
-          <span class="material-symbols-outlined text-lg">share</span> Twitter
-        </a>
-      </div>
-    </div>
-  </section>
-</main>
+        </div>
+      </section>
+    </main>
 
-<footer class="border-t border-primary/20 bg-surface-dark py-12 px-6">
-  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-slate-500 text-xs font-bold uppercase tracking-widest">
-    <div class="flex items-center gap-4">
-      <span class="text-primary">© 2026</span>
-      <span id="footer-name">Designed for the Future</span>
-    </div>
-    <div class="flex items-center gap-8">
-      <a href="/dashboard" class="hover:text-primary transition-colors">Admin Dashboard</a>
-      <a href="/profile" class="hover:text-primary transition-colors">Edit Profile</a>
-    </div>
-    <div class="flex items-center gap-2">
-      <span class="material-symbols-outlined text-primary text-sm">wifi</span>
-      <span>System Online</span>
-    </div>
+    <footer class="border-t border-primary/20 bg-surface-dark py-12 px-6">
+      <div
+        class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-slate-500 text-xs font-bold uppercase tracking-widest">
+        <div class="flex items-center gap-4">
+          <span class="text-primary">© 2026</span>
+          <span id="footer-name">Designed for the Future</span>
+        </div>
+        <div class="flex items-center gap-8">
+          <a href="dashboard.html" class="hover:text-primary transition-colors">Admin Dashboard</a>
+          <a href="profile.html" class="hover:text-primary transition-colors">Edit Profile</a>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-sm">wifi</span>
+          <span>System Online</span>
+        </div>
+      </div>
+    </footer>
   </div>
-</footer>
-</div>
 
-<!-- Toast Notification -->
-<div id="toast" class="toast"></div>
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
 
-<script>
-const API = ''; // empty = same origin
+  <script>
+    // ── Static Data Layer (localStorage) ────────────────────────────────────
+    const FORMSPREE_URL = 'https://formspree.io/f/YOUR_FORM_ID'; // ← replace with your Formspree endpoint
 
-// ── Toast helper ─────────────────────────────────────────────────────────
-function showToast(msg, type = 'success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 3500);
-}
-
-// ── Load Profile ─────────────────────────────────────────────────────────
-async function loadProfile() {
-  try {
-    const res = await fetch(`${API}/api/profile`);
-    const { data } = await res.json();
-    if (!data) return;
-
-    // Update hero
-    if (data.name) {
-      document.getElementById('hero-name').textContent = data.name.toUpperCase();
-      document.getElementById('footer-name').textContent = data.name;
-      document.getElementById('page-title').textContent = `${data.name} | Portfolio`;
+    function getProfile() {
+      try { return JSON.parse(localStorage.getItem('portfolio_profile') || '{}'); } catch { return {}; }
     }
-    if (data.role) document.getElementById('hero-role').textContent = data.role.toUpperCase();
-    if (data.bio)  document.getElementById('hero-bio').textContent = data.bio;
-
-    // Avatar
-    if (data.avatar_url) {
-      document.getElementById('header-avatar').src = data.avatar_url;
-      // Replace hero box with large avatar
-      const box = document.getElementById('hero-avatar-box');
-      box.innerHTML = `<img src="${data.avatar_url}" class="w-full h-full object-cover" alt="${data.name}"/>`;
-      box.className = 'w-full h-full overflow-hidden';
+    function getProjects() {
+      try { return JSON.parse(localStorage.getItem('portfolio_projects') || '[]'); } catch { return []; }
     }
 
-    // Resume
-    if (data.resume_url) {
-      const btn = document.getElementById('resume-btn');
-      btn.href = data.resume_url;
+    // ── Toast helper ─────────────────────────────────────────────────────────
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast ${type} show`;
+      setTimeout(() => t.classList.remove('show'), 3500);
     }
 
-    // Social links
-    if (data.github)   { const el = document.getElementById('social-github');   el.href = data.github;   el.classList.remove('hidden'); }
-    if (data.linkedin) { const el = document.getElementById('social-linkedin'); el.href = data.linkedin; el.classList.remove('hidden'); }
-    if (data.twitter)  { const el = document.getElementById('social-twitter');  el.href = data.twitter;  el.classList.remove('hidden'); }
-  } catch (err) {
-    console.warn('Could not load profile. Is the server running?', err.message);
-  }
-}
+    // ── Load Profile ─────────────────────────────────────────────────────────
+    function loadProfile() {
+      const data = getProfile();
+      if (!data || !Object.keys(data).length) return;
 
-// ── Load Projects ─────────────────────────────────────────────────────────
-async function loadProjects() {
-  const grid = document.getElementById('projects-grid');
-  try {
-    const res = await fetch(`${API}/api/projects`);
-    const { data } = await res.json();
+      // Update hero
+      if (data.name) {
+        document.getElementById('hero-name').textContent = data.name.toUpperCase();
+        document.getElementById('footer-name').textContent = data.name;
+        document.getElementById('page-title').textContent = `${data.name} | Portfolio`;
+      }
+      if (data.role) document.getElementById('hero-role').textContent = data.role.toUpperCase();
+      if (data.bio) document.getElementById('hero-bio').textContent = data.bio;
 
-    if (!data || data.length === 0) {
-      grid.innerHTML = `<div class="md:col-span-3 text-center py-12 text-slate-500">
-        <span class="material-symbols-outlined text-5xl mb-4 block">folder_open</span>
-        <p class="font-bold uppercase tracking-widest text-sm">No projects yet</p>
-        <p class="text-xs mt-1">Add projects from the <a href="/dashboard" class="text-primary underline">dashboard</a></p>
-      </div>`;
-      return;
+      // Avatar
+      if (data.avatar_url) {
+        document.getElementById('header-avatar').src = data.avatar_url;
+        const box = document.getElementById('hero-avatar-box');
+        box.innerHTML = `<img src="${data.avatar_url}" class="w-full h-full object-cover" alt="${data.name || 'Profile'}"/>`;
+        box.className = 'w-full h-full overflow-hidden';
+      }
+
+      // Resume
+      if (data.resume_url) {
+        const btn = document.getElementById('resume-btn');
+        btn.href = data.resume_url;
+        btn.classList.remove('hidden');
+      }
+
+      // Social links
+      if (data.github) { const el = document.getElementById('social-github'); el.href = data.github; el.classList.remove('hidden'); }
+      if (data.linkedin) { const el = document.getElementById('social-linkedin'); el.href = data.linkedin; el.classList.remove('hidden'); }
+      if (data.twitter) { const el = document.getElementById('social-twitter'); el.href = data.twitter; el.classList.remove('hidden'); }
     }
 
-    grid.innerHTML = data.map(p => `
-      <div class="group relative bg-surface-dark border border-white/5 hover:border-primary/50 transition-all duration-500">
-        <div class="aspect-[16/10] overflow-hidden bg-background-dark flex items-center justify-center">
-          ${p.image_url
-            ? `<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" src="${p.image_url}" alt="${p.title}"/>`
-            : `<span class="material-symbols-outlined text-primary/30 text-7xl">android</span>`
-          }
-        </div>
-        <div class="p-6">
-          <div class="flex flex-wrap gap-2 mb-3">
-            ${(p.tech_stack || []).map(t => `<span class="text-[10px] px-2 py-0.5 border border-primary/30 text-primary font-bold">${t.toUpperCase()}</span>`).join('')}
-          </div>
-          <h4 class="text-xl font-bold mb-2">${p.title.toUpperCase()}</h4>
-          <p class="text-slate-400 text-sm mb-4">${p.description}</p>
-          ${p.link ? `<a class="inline-flex items-center text-primary text-xs font-bold uppercase tracking-widest group/link" href="${p.link.startsWith('http') ? p.link : 'https://' + p.link}" target="_blank">
-            View Project <span class="material-symbols-outlined text-sm ml-1 group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
-          </a>` : ''}
-        </div>
-      </div>
-    `).join('');
-  } catch (err) {
-    grid.innerHTML = `<div class="md:col-span-3 text-center py-12 text-slate-500 text-sm">
-      ⚠️ Could not load projects. Make sure the server is running on <a href="http://localhost:3000" class="text-primary">http://localhost:3000</a>
+    // ── Load Projects ─────────────────────────────────────────────────────────
+    function loadProjects() {
+      const grid = document.getElementById('projects-grid');
+      const data = getProjects();
+
+      if (!data || data.length === 0) {
+        grid.innerHTML = `<div class="md:col-span-3 text-center py-12 text-slate-500">
+      <span class="material-symbols-outlined text-5xl mb-4 block">folder_open</span>
+      <p class="font-bold uppercase tracking-widest text-sm">No projects yet</p>
+      <p class="text-xs mt-1">Add projects from the <a href="dashboard.html" class="text-primary underline">dashboard</a></p>
     </div>`;
-  }
-}
+        return;
+      }
 
-// ── Contact Form ──────────────────────────────────────────────────────────
-document.getElementById('contact-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const btn = document.getElementById('contact-btn');
-  btn.textContent = 'TRANSMITTING...';
-  btn.disabled = true;
-
-  try {
-    const res = await fetch(`${API}/api/contact`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name:    document.getElementById('contact-name').value,
-        email:   document.getElementById('contact-email').value,
-        message: document.getElementById('contact-message').value,
-      })
-    });
-    const data = await res.json();
-    if (data.success) {
-      showToast(data.message, 'success');
-      document.getElementById('contact-form').reset();
-    } else {
-      showToast(data.message || 'Failed to send message.', 'error');
+      grid.innerHTML = data.map(p => `
+    <div class="group relative bg-surface-dark border border-white/5 hover:border-primary/50 transition-all duration-500">
+      <div class="aspect-[16/10] overflow-hidden bg-background-dark flex items-center justify-center">
+        ${p.image_url
+          ? `<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" src="${p.image_url}" alt="${p.title}"/>`
+          : `<span class="material-symbols-outlined text-primary/30 text-7xl">android</span>`
+        }
+      </div>
+      <div class="p-6">
+        <div class="flex flex-wrap gap-2 mb-3">
+          ${(p.tech_stack || []).map(t => `<span class="text-[10px] px-2 py-0.5 border border-primary/30 text-primary font-bold">${t.toUpperCase()}</span>`).join('')}
+        </div>
+        <h4 class="text-xl font-bold mb-2">${p.title.toUpperCase()}</h4>
+        <p class="text-slate-400 text-sm mb-4">${p.description || ''}</p>
+        ${p.link ? `<a class="inline-flex items-center text-primary text-xs font-bold uppercase tracking-widest group/link" href="${p.link.startsWith('http') ? p.link : 'https://' + p.link}" target="_blank">
+          View Project <span class="material-symbols-outlined text-sm ml-1 group-hover/link:translate-x-1 transition-transform">arrow_forward</span>
+        </a>` : ''}
+      </div>
+    </div>
+  `).join('');
     }
-  } catch {
-    showToast('⚠️ Server offline. Start the server first.', 'error');
-  } finally {
-    btn.textContent = 'TRANSMIT DATA';
-    btn.disabled = false;
-  }
-});
 
-// ── Init ──────────────────────────────────────────────────────────────────
-loadProfile();
-loadProjects();
-</script>
+    // ── Contact Form (Formspree) ───────────────────────────────────────────────
+    document.getElementById('contact-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('contact-btn');
+      btn.textContent = 'TRANSMITTING...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(FORMSPREE_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            name: document.getElementById('contact-name').value,
+            email: document.getElementById('contact-email').value,
+            message: document.getElementById('contact-message').value,
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast('✅ Message received! I will get back to you soon.', 'success');
+          document.getElementById('contact-form').reset();
+        } else {
+          showToast(data.error || 'Failed to send message.', 'error');
+        }
+      } catch {
+        showToast('⚠️ Could not send message. Please try again.', 'error');
+      } finally {
+        btn.textContent = 'TRANSMIT DATA';
+        btn.disabled = false;
+      }
+    });
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    loadProfile();
+    loadProjects();
+
+    // Reload data when localStorage is updated from another page (dashboard/profile)
+    window.addEventListener('storage', () => { loadProfile(); loadProjects(); });
+  </script>
 </body>
+
 </html>

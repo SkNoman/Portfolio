@@ -131,8 +131,9 @@
                         Editor</h1>
                 </div>
                 <nav class="hidden md:flex items-center gap-8">
-                    <a href="/" class="text-sm font-medium hover:text-primary transition-colors">Portfolio</a>
-                    <a href="/dashboard" class="text-sm font-medium hover:text-primary transition-colors">Dashboard</a>
+                    <a href="index.html" class="text-sm font-medium hover:text-primary transition-colors">Portfolio</a>
+                    <a href="dashboard.html"
+                        class="text-sm font-medium hover:text-primary transition-colors">Dashboard</a>
                     <a href="/profile"
                         class="text-sm font-medium text-primary border-b-2 border-primary pb-1">Profile</a>
                 </nav>
@@ -256,32 +257,30 @@
                         </div>
                     </section>
 
-                    <!-- Resume Upload -->
+                    <!-- Resume URL -->
                     <section class="space-y-6">
                         <div class="flex items-center gap-2 text-primary">
                             <span class="material-symbols-outlined">description</span>
                             <h3 class="text-lg font-bold uppercase tracking-widest">Resume / CV</h3>
                         </div>
-                        <div id="resume-drop-zone"
-                            class="border-2 border-dashed border-border-dark rounded-xl p-8 flex flex-col items-center justify-center gap-4 bg-neutral-dark/30 hover:bg-primary/5 transition-colors group cursor-pointer">
-                            <div
-                                class="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                                <span class="material-symbols-outlined" id="resume-icon">upload_file</span>
+                        <div class="space-y-3">
+                            <label class="text-xs font-bold uppercase text-slate-500">Resume / CV Link</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">link</span>
+                                <input id="prof-resume-url"
+                                    class="w-full bg-neutral-dark border border-border-dark rounded p-4 pl-12 focus:ring-1 focus:ring-primary focus:border-primary outline-none text-slate-100 transition-all"
+                                    type="url" placeholder="https://drive.google.com/... or any public PDF link" />
                             </div>
-                            <div class="text-center">
-                                <p class="font-bold text-slate-200" id="resume-label">Upload Resume / CV</p>
-                                <p class="text-xs text-slate-500 mt-1">PDF, DOCX up to 10MB — saves immediately</p>
+                            <p class="text-xs text-slate-500">Paste a public link to your resume (Google Drive, Dropbox,
+                                etc.)</p>
+                            <div id="resume-download-section" class="hidden">
+                                <a id="resume-download-link" href="#" target="_blank"
+                                    class="inline-flex items-center gap-2 px-6 py-3 border border-primary/30 text-primary font-bold uppercase text-xs tracking-widest hover:bg-primary hover:text-background-dark transition-all rounded">
+                                    <span class="material-symbols-outlined text-sm">download</span>
+                                    Preview Resume
+                                </a>
                             </div>
-                        </div>
-                        <input type="file" id="resume-input" accept=".pdf,.doc,.docx" class="hidden" />
-
-                        <!-- Download button (shown when resume exists) -->
-                        <div id="resume-download-section" class="hidden">
-                            <a id="resume-download-link" href="#" target="_blank"
-                                class="inline-flex items-center gap-2 px-6 py-3 border border-primary/30 text-primary font-bold uppercase text-xs tracking-widest hover:bg-primary hover:text-background-dark transition-all rounded">
-                                <span class="material-symbols-outlined text-sm">download</span>
-                                Download Resume
-                            </a>
                         </div>
                     </section>
 
@@ -374,8 +373,8 @@
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="text-slate-500 text-xs uppercase tracking-widest">© 2026 PORTFOLIO_OS / TERMINAL_V1.2</div>
                 <div class="flex gap-6 text-slate-500 text-xs font-bold uppercase tracking-widest">
-                    <a href="/" class="hover:text-primary transition-colors">Portfolio</a>
-                    <a href="/dashboard" class="hover:text-primary transition-colors">Dashboard</a>
+                    <a href="index.html" class="hover:text-primary transition-colors">Portfolio</a>
+                    <a href="dashboard.html" class="hover:text-primary transition-colors">Dashboard</a>
                 </div>
             </div>
         </footer>
@@ -385,11 +384,17 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        const API = '';
         const ADMIN_PASSWORD = 'admin123'; // Change this!
-        let currentResumeUrl = '';
 
-        // ── Auth ──────────────────────────────────────────────────────────────────
+        // ── localStorage helpers ───────────────────────────────────────────────────────
+        function getProfile() {
+            try { return JSON.parse(localStorage.getItem('portfolio_profile') || '{}'); } catch { return {}; }
+        }
+        function saveProfile(data) {
+            localStorage.setItem('portfolio_profile', JSON.stringify(data));
+        }
+
+        // ── Auth ────────────────────────────────────────────────────────────────────────
         function checkAuth() {
             if (sessionStorage.getItem('portfolio_admin') === 'true') {
                 document.getElementById('auth-overlay').style.display = 'none';
@@ -412,7 +417,7 @@
             if (e.key === 'Enter') document.getElementById('auth-btn').click();
         });
 
-        // ── Toast ─────────────────────────────────────────────────────────────────
+        // ── Toast ──────────────────────────────────────────────────────────────────────
         function showToast(msg, type = 'success') {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -420,7 +425,7 @@
             setTimeout(() => t.classList.remove('show'), 3500);
         }
 
-        // ── Live Preview Updates ──────────────────────────────────────────────────
+        // ── Live Preview Updates ────────────────────────────────────────────────────
         function updatePreview() {
             const name = document.getElementById('prof-name').value || 'Your Name';
             const role = document.getElementById('prof-role').value || 'Your Role';
@@ -430,102 +435,92 @@
             document.getElementById('preview-role').textContent = role;
             document.getElementById('preview-bio').textContent = `"${bio}"`;
 
-            // Social link previews
             const github = document.getElementById('prof-github').value;
             const linkedin = document.getElementById('prof-linkedin').value;
             const twitter = document.getElementById('prof-twitter').value;
             if (github) document.getElementById('preview-github-link').href = github;
             if (linkedin) document.getElementById('preview-linkedin-link').href = linkedin;
             if (twitter) document.getElementById('preview-twitter-link').href = twitter;
-        }
 
-        // Attach live preview listeners
-        ['prof-name', 'prof-role', 'prof-bio', 'prof-email', 'prof-github', 'prof-linkedin', 'prof-twitter'].forEach(id => {
-            document.getElementById(id).addEventListener('input', updatePreview);
-        });
-
-        // ── Load Current Profile ──────────────────────────────────────────────────
-        async function loadProfile() {
-            try {
-                const res = await fetch(`${API}/api/profile`);
-                const { data } = await res.json();
-                if (!data) return;
-
-                document.getElementById('prof-name').value = data.name || '';
-                document.getElementById('prof-role').value = data.role || '';
-                document.getElementById('prof-bio').value = data.bio || '';
-                document.getElementById('prof-email').value = data.email || '';
-                document.getElementById('prof-github').value = data.github || '';
-                document.getElementById('prof-linkedin').value = data.linkedin || '';
-                document.getElementById('prof-twitter').value = data.twitter || '';
-
-                if (data.avatar_url) {
-                    document.getElementById('avatar-preview').src = data.avatar_url;
-                    document.getElementById('preview-avatar').src = data.avatar_url;
-                    document.getElementById('header-avatar').src = data.avatar_url;
-                }
-
-                if (data.resume_url) {
-                    currentResumeUrl = data.resume_url;
-                    document.getElementById('resume-label').textContent = '✅ Resume uploaded';
-                    document.getElementById('resume-icon').textContent = 'check_circle';
-                    document.getElementById('resume-download-section').classList.remove('hidden');
-                    document.getElementById('resume-download-link').href = data.resume_url;
-                    // Show in preview
-                    const btn = document.getElementById('preview-resume-btn');
-                    btn.href = data.resume_url;
-                    btn.style.display = 'block';
-                }
-
-                updatePreview();
-            } catch (err) {
-                showToast('⚠️ Cannot connect to server. Run: node server.js', 'error');
+            // Resume URL preview
+            const resumeUrl = document.getElementById('prof-resume-url').value.trim();
+            if (resumeUrl) {
+                document.getElementById('resume-download-section').classList.remove('hidden');
+                document.getElementById('resume-download-link').href = resumeUrl;
+                const btn = document.getElementById('preview-resume-btn');
+                btn.href = resumeUrl;
+                btn.style.display = 'block';
             }
         }
 
-        // ── Save Profile ──────────────────────────────────────────────────────────
-        async function saveProfile() {
+        // Attach live preview listeners
+        ['prof-name', 'prof-role', 'prof-bio', 'prof-email', 'prof-github', 'prof-linkedin', 'prof-twitter', 'prof-resume-url'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updatePreview);
+        });
+
+        // ── Load Current Profile ─────────────────────────────────────────────────────
+        function loadProfile() {
+            const data = getProfile();
+            if (!data) return;
+
+            document.getElementById('prof-name').value = data.name || '';
+            document.getElementById('prof-role').value = data.role || '';
+            document.getElementById('prof-bio').value = data.bio || '';
+            document.getElementById('prof-email').value = data.email || '';
+            document.getElementById('prof-github').value = data.github || '';
+            document.getElementById('prof-linkedin').value = data.linkedin || '';
+            document.getElementById('prof-twitter').value = data.twitter || '';
+            document.getElementById('prof-resume-url').value = data.resume_url || '';
+
+            if (data.avatar_url) {
+                document.getElementById('avatar-preview').src = data.avatar_url;
+                document.getElementById('preview-avatar').src = data.avatar_url;
+                document.getElementById('header-avatar').src = data.avatar_url;
+            }
+
+            if (data.resume_url) {
+                document.getElementById('resume-download-section').classList.remove('hidden');
+                document.getElementById('resume-download-link').href = data.resume_url;
+                const btn = document.getElementById('preview-resume-btn');
+                btn.href = data.resume_url;
+                btn.style.display = 'block';
+            }
+
+            updatePreview();
+        }
+
+        // ── Save Profile ─────────────────────────────────────────────────────────────────
+        function doSaveProfile() {
             const btn1 = document.getElementById('save-btn');
             const btn2 = document.getElementById('save-btn-bottom');
             const label = document.getElementById('save-btn-label');
             label.textContent = 'Saving...';
             btn1.disabled = btn2.disabled = true;
 
-            try {
-                const payload = {
-                    name: document.getElementById('prof-name').value.trim(),
-                    role: document.getElementById('prof-role').value.trim(),
-                    bio: document.getElementById('prof-bio').value.trim(),
-                    email: document.getElementById('prof-email').value.trim(),
-                    github: document.getElementById('prof-github').value.trim(),
-                    linkedin: document.getElementById('prof-linkedin').value.trim(),
-                    twitter: document.getElementById('prof-twitter').value.trim(),
-                };
+            const existing = getProfile();
+            const payload = {
+                ...existing, // keep avatar_url that was set separately
+                name: document.getElementById('prof-name').value.trim(),
+                role: document.getElementById('prof-role').value.trim(),
+                bio: document.getElementById('prof-bio').value.trim(),
+                email: document.getElementById('prof-email').value.trim(),
+                github: document.getElementById('prof-github').value.trim(),
+                linkedin: document.getElementById('prof-linkedin').value.trim(),
+                twitter: document.getElementById('prof-twitter').value.trim(),
+                resume_url: document.getElementById('prof-resume-url').value.trim(),
+            };
 
-                const res = await fetch(`${API}/api/profile`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                });
-                const data = await res.json();
+            saveProfile(payload);
+            showToast('✅ Profile updated successfully!', 'success');
 
-                if (data.success) {
-                    showToast('✅ Profile updated successfully!', 'success');
-                } else {
-                    showToast(data.message || 'Update failed.', 'error');
-                }
-            } catch {
-                showToast('⚠️ Server offline. Run: node server.js', 'error');
-            } finally {
-                label.textContent = 'Save Profile';
-                btn1.disabled = btn2.disabled = false;
-            }
+            label.textContent = 'Save Profile';
+            btn1.disabled = btn2.disabled = false;
         }
 
-        document.getElementById('save-btn').addEventListener('click', saveProfile);
-        document.getElementById('save-btn-bottom').addEventListener('click', saveProfile);
+        document.getElementById('save-btn').addEventListener('click', doSaveProfile);
+        document.getElementById('save-btn-bottom').addEventListener('click', doSaveProfile);
 
-        // ── Avatar Upload ─────────────────────────────────────────────────────────
+        // ── Avatar Upload (Base64) ────────────────────────────────────────────────────
         const avatarDrop = document.getElementById('avatar-drop-zone');
         const avatarInput = document.getElementById('avatar-input');
 
@@ -536,84 +531,28 @@
         avatarDrop.addEventListener('drop', (e) => {
             e.preventDefault(); avatarDrop.classList.remove('drag-over');
             const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) uploadAvatar(file);
+            if (file && file.type.startsWith('image/')) handleAvatar(file);
         });
-        avatarInput.addEventListener('change', (e) => { if (e.target.files[0]) uploadAvatar(e.target.files[0]); });
+        avatarInput.addEventListener('change', (e) => { if (e.target.files[0]) handleAvatar(e.target.files[0]); });
 
-        async function uploadAvatar(file) {
-            // Show instant preview
+        function handleAvatar(file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                document.getElementById('avatar-preview').src = e.target.result;
-                document.getElementById('preview-avatar').src = e.target.result;
-                document.getElementById('header-avatar').src = e.target.result;
+                const base64 = e.target.result;
+                // Update previews immediately
+                document.getElementById('avatar-preview').src = base64;
+                document.getElementById('preview-avatar').src = base64;
+                document.getElementById('header-avatar').src = base64;
+                // Persist into profile in localStorage
+                const profile = getProfile();
+                profile.avatar_url = base64;
+                saveProfile(profile);
+                showToast('✅ Profile photo updated!', 'success');
             };
             reader.readAsDataURL(file);
-
-            // Upload to server
-            const loader = document.getElementById('avatar-loading');
-            loader.classList.remove('hidden');
-            loader.classList.add('flex');
-            try {
-                const form = new FormData();
-                form.append('avatar', file);
-                const res = await fetch(`${API}/api/upload/avatar`, { method: 'POST', body: form });
-                const data = await res.json();
-                if (data.success) showToast('✅ Profile photo updated!', 'success');
-                else showToast(data.message, 'error');
-            } catch {
-                showToast('⚠️ Upload failed.', 'error');
-            } finally {
-                loader.classList.add('hidden');
-                loader.classList.remove('flex');
-            }
         }
 
-        // ── Resume Upload ─────────────────────────────────────────────────────────
-        const resumeDrop = document.getElementById('resume-drop-zone');
-        const resumeInput = document.getElementById('resume-input');
-
-        resumeDrop.addEventListener('click', () => resumeInput.click());
-        resumeDrop.addEventListener('dragover', (e) => { e.preventDefault(); resumeDrop.classList.add('drag-over'); });
-        resumeDrop.addEventListener('dragleave', () => resumeDrop.classList.remove('drag-over'));
-        resumeDrop.addEventListener('drop', (e) => {
-            e.preventDefault(); resumeDrop.classList.remove('drag-over');
-            const file = e.dataTransfer.files[0];
-            if (file) uploadResume(file);
-        });
-        resumeInput.addEventListener('change', (e) => { if (e.target.files[0]) uploadResume(e.target.files[0]); });
-
-        async function uploadResume(file) {
-            document.getElementById('resume-label').textContent = 'Uploading...';
-            document.getElementById('resume-icon').textContent = 'hourglass_empty';
-            try {
-                const form = new FormData();
-                form.append('resume', file);
-                const res = await fetch(`${API}/api/upload/resume`, { method: 'POST', body: form });
-                const data = await res.json();
-                if (data.success) {
-                    showToast('✅ Resume uploaded!', 'success');
-                    document.getElementById('resume-label').textContent = `✅ ${file.name}`;
-                    document.getElementById('resume-icon').textContent = 'check_circle';
-                    document.getElementById('resume-download-section').classList.remove('hidden');
-                    document.getElementById('resume-download-link').href = data.resume_url;
-                    // Update preview
-                    const btn = document.getElementById('preview-resume-btn');
-                    btn.href = data.resume_url;
-                    btn.style.display = 'block';
-                } else {
-                    showToast(data.message, 'error');
-                    document.getElementById('resume-label').textContent = 'Upload Resume / CV';
-                    document.getElementById('resume-icon').textContent = 'upload_file';
-                }
-            } catch {
-                showToast('⚠️ Upload failed.', 'error');
-                document.getElementById('resume-label').textContent = 'Upload Resume / CV';
-                document.getElementById('resume-icon').textContent = 'upload_file';
-            }
-        }
-
-        // ── Init ──────────────────────────────────────────────────────────────────
+        // ── Init ────────────────────────────────────────────────────────────────────────
         checkAuth();
     </script>
 </body>

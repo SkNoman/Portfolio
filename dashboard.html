@@ -160,12 +160,12 @@
                 <span class="text-sm font-medium">Dashboard</span>
             </a>
             <a class="flex items-center gap-3 px-3 py-2.5 rounded text-slate-400 hover:bg-primary/5 hover:text-primary transition-all"
-                href="/">
+                href="index.html">
                 <span class="material-symbols-outlined text-[20px]">home</span>
                 <span class="text-sm font-medium">View Portfolio</span>
             </a>
             <a class="flex items-center gap-3 px-3 py-2.5 rounded text-slate-400 hover:bg-primary/5 hover:text-primary transition-all"
-                href="/profile">
+                href="profile.html">
                 <span class="material-symbols-outlined text-[20px]">person</span>
                 <span class="text-sm font-medium">Edit Profile</span>
             </a>
@@ -198,7 +198,7 @@
         <header
             class="h-16 border-b border-border-dark flex items-center justify-between px-8 shrink-0 bg-background-dark/80 backdrop-blur-md sticky top-0 z-10">
             <div class="flex items-center gap-2">
-                <a href="/" class="text-slate-400 hover:text-primary text-sm transition-colors">Portfolio</a>
+                <a href="index.html" class="text-slate-400 hover:text-primary text-sm transition-colors">Portfolio</a>
                 <span class="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
                 <span class="font-medium text-sm">Project Dashboard</span>
             </div>
@@ -424,11 +424,24 @@
     </div>
 
     <script>
-        const API = '';
         const ADMIN_PASSWORD = 'admin123'; // Change this!
         let allProjects = [];
         let techStack = [];
         let deleteTargetId = null;
+
+        // ── localStorage helpers ─────────────────────────────────────────────────
+        function getProjects() {
+            try { return JSON.parse(localStorage.getItem('portfolio_projects') || '[]'); } catch { return []; }
+        }
+        function saveProjects(list) {
+            localStorage.setItem('portfolio_projects', JSON.stringify(list));
+        }
+        function getProfile() {
+            try { return JSON.parse(localStorage.getItem('portfolio_profile') || '{}'); } catch { return {}; }
+        }
+        function nextId(list) {
+            return list.length > 0 ? Math.max(...list.map(p => p.id || 0)) + 1 : 1;
+        }
 
         // ── Auth ──────────────────────────────────────────────────────────────────
         function checkAuth() {
@@ -469,7 +482,6 @@
         // ── Tech Stack Chips ──────────────────────────────────────────────────────
         function renderChips() {
             const container = document.getElementById('tech-chips-container');
-            // Keep the input div
             const inputDiv = container.querySelector('div');
             container.innerHTML = '';
             techStack.forEach((tag, i) => {
@@ -499,10 +511,10 @@
             }
         });
 
-        // ── Image Upload / Drag & Drop ────────────────────────────────────────────
+        // ── Image Upload (Base64) ─────────────────────────────────────────────────
         const dropZone = document.getElementById('drop-zone');
         const imageInput = document.getElementById('image-input');
-        let selectedImageFile = null;
+        let selectedImageBase64 = null;
 
         document.getElementById('browse-trigger').addEventListener('click', () => imageInput.click());
         dropZone.addEventListener('click', (e) => { if (!e.target.id.includes('browse')) imageInput.click(); });
@@ -522,9 +534,9 @@
         });
 
         function handleImageFile(file) {
-            selectedImageFile = file;
             const reader = new FileReader();
             reader.onload = (e) => {
+                selectedImageBase64 = e.target.result;
                 document.getElementById('preview-img').src = e.target.result;
                 document.getElementById('image-preview').classList.add('show');
                 dropZone.classList.add('hidden');
@@ -533,38 +545,26 @@
         }
 
         document.getElementById('remove-img-btn').addEventListener('click', () => {
-            selectedImageFile = null;
+            selectedImageBase64 = null;
             imageInput.value = '';
             document.getElementById('image-preview').classList.remove('show');
             dropZone.classList.remove('hidden');
         });
 
-        // ── Load Profile ──────────────────────────────────────────────────────────
-        async function loadProfile() {
-            try {
-                const res = await fetch(`${API}/api/profile`);
-                const { data } = await res.json();
-                if (data) {
-                    document.getElementById('sidebar-name').textContent = data.name || 'Admin';
-                    if (data.avatar_url) document.getElementById('sidebar-avatar').src = data.avatar_url;
-                }
-            } catch { }
+        // ── Load Profile (sidebar) ────────────────────────────────────────────────
+        function loadProfile() {
+            const data = getProfile();
+            if (data) {
+                document.getElementById('sidebar-name').textContent = data.name || 'Admin';
+                if (data.avatar_url) document.getElementById('sidebar-avatar').src = data.avatar_url;
+            }
         }
 
-        // ── Load Projects ─────────────────────────────────────────────────────────
-        async function loadProjects() {
-            try {
-                const res = await fetch(`${API}/api/projects`);
-                const { data } = await res.json();
-                allProjects = data || [];
-                renderTable(allProjects);
-                updateStats(allProjects);
-            } catch (err) {
-                document.getElementById('projects-tbody').innerHTML = `
-      <tr><td colspan="5" class="px-6 py-8 text-center text-red-400 text-sm">
-        ⚠️ Cannot connect to server. Make sure <code>node server.js</code> is running.
-      </td></tr>`;
-            }
+        // ── Load / Render Projects ────────────────────────────────────────────────
+        function loadProjects() {
+            allProjects = getProjects();
+            renderTable(allProjects);
+            updateStats(allProjects);
         }
 
         function updateStats(projects) {
@@ -639,7 +639,7 @@
   `).join('');
         }
 
-        // ── Search ─────────────────────────────────────────────────────────────────
+        // ── Search ────────────────────────────────────────────────────────────────
         document.getElementById('search-input').addEventListener('input', (e) => {
             const q = e.target.value.toLowerCase();
             const filtered = allProjects.filter(p =>
@@ -650,47 +650,56 @@
             renderTable(filtered);
         });
 
-        // ── Add / Submit Project ──────────────────────────────────────────────────
-        document.getElementById('add-project-form').addEventListener('submit', async (e) => {
+        // ── Add / Update Project ──────────────────────────────────────────────────
+        document.getElementById('add-project-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
             const label = document.getElementById('submit-label');
-            const editId = document.getElementById('edit-project-id').value;
-            label.textContent = 'Deploying...';
+            const editId = parseInt(document.getElementById('edit-project-id').value);
+
+            const title = document.getElementById('proj-title').value.trim();
+            if (!title) return;
+
+            label.textContent = 'Saving...';
             btn.disabled = true;
 
-            try {
-                const formData = new FormData();
-                formData.append('title', document.getElementById('proj-title').value.trim());
-                formData.append('description', document.getElementById('proj-desc').value.trim());
-                formData.append('link', document.getElementById('proj-link').value.trim());
-                formData.append('status', document.getElementById('proj-status').value);
-                formData.append('tech_stack', JSON.stringify(techStack));
-                if (selectedImageFile) formData.append('image', selectedImageFile);
+            const projects = getProjects();
 
-                let res, data;
-                if (editId) {
-                    // Update existing project
-                    res = await fetch(`${API}/api/projects/${editId}`, { method: 'PUT', body: formData });
-                } else {
-                    // New project
-                    res = await fetch(`${API}/api/projects`, { method: 'POST', body: formData });
+            if (editId) {
+                const idx = projects.findIndex(p => p.id === editId);
+                if (idx !== -1) {
+                    projects[idx] = {
+                        ...projects[idx],
+                        title,
+                        description: document.getElementById('proj-desc').value.trim(),
+                        link: document.getElementById('proj-link').value.trim(),
+                        status: document.getElementById('proj-status').value,
+                        tech_stack: [...techStack],
+                        image_url: selectedImageBase64 !== null ? selectedImageBase64 : projects[idx].image_url,
+                    };
+                    saveProjects(projects);
+                    showToast('✅ Project updated!', 'success');
                 }
-                data = await res.json();
-
-                if (data.success) {
-                    showToast(data.message, 'success');
-                    resetForm();
-                    loadProjects();
-                } else {
-                    showToast(data.message || 'Error! Try again.', 'error');
-                }
-            } catch {
-                showToast('⚠️ Server offline. Run: node server.js', 'error');
-            } finally {
-                label.textContent = editId ? 'Update Project' : 'Deploy to Portfolio';
-                btn.disabled = false;
+            } else {
+                const newProject = {
+                    id: nextId(projects),
+                    title,
+                    description: document.getElementById('proj-desc').value.trim(),
+                    link: document.getElementById('proj-link').value.trim(),
+                    status: document.getElementById('proj-status').value,
+                    tech_stack: [...techStack],
+                    image_url: selectedImageBase64 || '',
+                    created_at: new Date().toISOString(),
+                };
+                projects.unshift(newProject);
+                saveProjects(projects);
+                showToast('✅ Project deployed to portfolio!', 'success');
             }
+
+            resetForm();
+            loadProjects();
+            label.textContent = 'Deploy to Portfolio';
+            btn.disabled = false;
         });
 
         // ── Edit Project ──────────────────────────────────────────────────────────
@@ -706,12 +715,12 @@
             techStack = [...(p.tech_stack || [])];
             renderChips();
 
-            // Show current image if any
             if (p.image_url) {
                 document.getElementById('preview-img').src = p.image_url;
                 document.getElementById('image-preview').classList.add('show');
                 dropZone.classList.add('hidden');
             }
+            selectedImageBase64 = null; // only replace image if a new one is picked
 
             document.getElementById('submit-label').textContent = 'Update Project';
             document.getElementById('submit-icon').textContent = 'save';
@@ -721,16 +730,14 @@
             scrollToAddForm();
         }
 
-        function cancelEdit() {
-            resetForm();
-        }
+        function cancelEdit() { resetForm(); }
 
         function resetForm() {
             document.getElementById('add-project-form').reset();
             document.getElementById('edit-project-id').value = '';
             techStack = [];
             renderChips();
-            selectedImageFile = null;
+            selectedImageBase64 = null;
             imageInput.value = '';
             document.getElementById('image-preview').classList.remove('show');
             dropZone.classList.remove('hidden');
@@ -752,20 +759,12 @@
             document.getElementById('delete-modal').classList.remove('flex');
         }
 
-        document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+        document.getElementById('confirm-delete-btn').addEventListener('click', () => {
             if (!deleteTargetId) return;
-            try {
-                const res = await fetch(`${API}/api/projects/${deleteTargetId}`, { method: 'DELETE' });
-                const data = await res.json();
-                if (data.success) {
-                    showToast(data.message, 'success');
-                    loadProjects();
-                } else {
-                    showToast(data.message, 'error');
-                }
-            } catch {
-                showToast('⚠️ Server offline.', 'error');
-            }
+            const projects = getProjects().filter(p => p.id !== deleteTargetId);
+            saveProjects(projects);
+            showToast('✅ Project removed from portfolio.', 'success');
+            loadProjects();
             closeDeleteModal();
         });
 
