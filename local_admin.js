@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 3333;
+const PORT = 3331;
 const DATA_FILE = path.join(__dirname, 'data', 'portfolio.json');
 const IMAGES_DIR = path.join(__dirname, 'images');
 
@@ -15,12 +15,32 @@ const server = http.createServer((req, res) => {
 
     // CORS Headers
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
     if (req.method === 'OPTIONS') {
         res.writeHead(204);
         res.end();
+        return;
+    }
+
+    const urlPath = req.url.split('?')[0];
+
+    // GET handler for loading data
+    if (req.method === 'GET' && urlPath === '/load') {
+        try {
+            if (fs.existsSync(DATA_FILE)) {
+                const data = fs.readFileSync(DATA_FILE, 'utf8');
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(data);
+            } else {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ profile: {}, projects: [] }));
+            }
+        } catch (err) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ status: 'error', message: err.message }));
+        }
         return;
     }
 
@@ -38,7 +58,6 @@ const server = http.createServer((req, res) => {
                 }
 
                 const data = JSON.parse(body);
-                const urlPath = req.url.split('?')[0]; // Remove query strings
 
                 if (urlPath === '/save') {
                     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));

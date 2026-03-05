@@ -2,7 +2,7 @@
   "profile": {
     "name": "Noman",
     "role": "Android Developer",
-    "bio": "Try to become a man of value",
+    "bio": "Android Developer with 4+ years of experience specializing in Kotlin, Jetpack Compose, and modern Android architecture. Focused on building scalable, high-quality mobile apps with strong performance and user experience.",
     "email": "sknoman77@gmail.com",
     "github": "https://github.com/SkNoman",
     "linkedin": "https://bd.linkedin.com/in/sk-noman-66a663193",
@@ -10,6 +10,50 @@
     "resume_url": ""
   },
   "projects": [
+    {
+      "id": 5,
+      "title": "AWAZ",
+      "description": "AWAZ is a complete one touch app solution for everyone. Users can explore the amazing features, useful services and contents concerning the industry and consumer experience in one superverse platform. This will act as a digital connector between people and digitalization.",
+      "link": "https://play.google.com/store/apps/details?id=com.walton.eapp",
+      "status": "LIVE",
+      "tech_stack": [
+        "Andorid",
+        "XML",
+        "Kotlin"
+      ],
+      "image_url": "",
+      "created_at": "2026-03-05T07:18:50.616Z"
+    },
+    {
+      "id": 4,
+      "title": "Video Resizer & Compressor",
+      "description": "A powerful video resizer and compressor app with several tools like resize video size to fit popular social media, reduce storage, quickly upload a large video online, or edit videos.",
+      "link": "https://play.google.com/store/apps/details?id=com.video.resizer.compressor",
+      "status": "LIVE",
+      "tech_stack": [
+        "Android",
+        "Jetpack Compose",
+        "FFmpeg",
+        "Kotlin"
+      ],
+      "image_url": "",
+      "created_at": "2026-03-05T07:16:33.884Z"
+    },
+    {
+      "id": 3,
+      "title": "OCR Image to Text Scanner",
+      "description": "Scan images and turn them into PDF and  extract text from images fast and accurately.",
+      "link": "https://play.google.com/store/apps/details?id=com.ocr.image.to.text.scanner",
+      "status": "LIVE",
+      "tech_stack": [
+        "Android",
+        "ML Kit",
+        "Kotlin",
+        "Jetpack Compose"
+      ],
+      "image_url": "",
+      "created_at": "2026-03-05T07:12:58.530Z"
+    },
     {
       "id": 2,
       "title": "Image Compressor & Resizer",
@@ -28,11 +72,13 @@
       "id": 1,
       "title": "TTBoost",
       "description": "Get TikTok Likes Followers Instantly",
-      "link": "https://play.google.com/store/apps/details?id=com.ttboost.tik.tok.followers.likes",
+      "link": "play.google.com/store/apps/details?id=com.ttboost.tik.tok.followers.likes",
       "status": "LIVE",
       "tech_stack": [
         "Android",
-        "Jetpack Compose"
+        "Jetpack Compose",
+        "Kotlin",
+        "Circuit UI"
       ],
       "image_url": "",
       "created_at": "2026-03-05T06:42:42.766Z"

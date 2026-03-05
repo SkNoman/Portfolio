@@ -417,15 +417,41 @@
         }
 
         async function initData() {
-            try {
-                const res = await fetch('./data/portfolio.json');
-                if (res.ok) {
-                    const data = await res.json();
-                    localStorage.setItem('portfolio_profile', JSON.stringify(data.profile || {}));
-                    localStorage.setItem('portfolio_projects', JSON.stringify(data.projects || []));
-                }
-            } catch (err) { }
             await checkLocalAdmin();
+
+            let data = null;
+
+            // Try local server first
+            if (localAdminActive) {
+                try {
+                    const res = await fetch(`${LOCAL_ADMIN_URL}/load`);
+                    if (res.ok) {
+                        data = await res.json();
+                        console.log('✅ Data loaded from Local Admin Server');
+                    }
+                } catch (err) {
+                    console.warn('Failed to load from Local Admin, falling back...');
+                }
+            }
+
+            // Fallback to local file fetch
+            if (!data) {
+                try {
+                    const res = await fetch('./data/portfolio.json');
+                    if (res.ok) {
+                        data = await res.json();
+                        console.log('✅ Data loaded from portfolio.json');
+                    }
+                } catch (err) {
+                    console.error('Failed to load portfolio.json', err);
+                }
+            }
+
+            if (data) {
+                localStorage.setItem('portfolio_profile', JSON.stringify(data.profile || {}));
+                localStorage.setItem('portfolio_projects', JSON.stringify(data.projects || []));
+            }
+
             loadProfile();
         }
 
