@@ -11,7 +11,7 @@
   },
   "projects": [
     {
-      "id": 5,
+      "id": 1,
       "title": "AWAZ",
       "description": "AWAZ is a complete one touch app solution for everyone. Users can explore the amazing features, useful services and contents concerning the industry and consumer experience in one superverse platform. This will act as a digital connector between people and digitalization.",
       "link": "https://play.google.com/store/apps/details?id=com.walton.eapp",
@@ -25,7 +25,7 @@
       "created_at": "2026-03-05T07:18:50.616Z"
     },
     {
-      "id": 4,
+      "id": 2,
       "title": "Video Resizer & Compressor",
       "description": "A powerful video resizer and compressor app with several tools like resize video size to fit popular social media, reduce storage, quickly upload a large video online, or edit videos.",
       "link": "https://play.google.com/store/apps/details?id=com.video.resizer.compressor",
@@ -55,7 +55,7 @@
       "created_at": "2026-03-05T07:12:58.530Z"
     },
     {
-      "id": 2,
+      "id": 4,
       "title": "Image Compressor & Resizer",
       "description": "Compress image without losing visible quality.",
       "link": "https://play.google.com/store/apps/details?id=com.image.compressor.resizer",
@@ -69,7 +69,7 @@
       "created_at": "2026-03-05T06:51:28.170Z"
     },
     {
-      "id": 1,
+      "id": 5,
       "title": "TTBoost",
       "description": "Get TikTok Likes Followers Instantly",
       "link": "play.google.com/store/apps/details?id=com.ttboost.tik.tok.followers.likes",
