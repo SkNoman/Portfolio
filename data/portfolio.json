@@ -1,5 +1,5 @@
 {
-    "profile": {
+  "profile": {
     "name": "Noman",
     "role": "Android Developer",
     "bio": "Try to become a man of value",
@@ -10,6 +10,20 @@
     "resume_url": ""
   },
   "projects": [
+    {
+      "id": 2,
+      "title": "Image Compressor & Resizer",
+      "description": "Compress image without losing visible quality.",
+      "link": "https://play.google.com/store/apps/details?id=com.image.compressor.resizer",
+      "status": "LIVE",
+      "tech_stack": [
+        "Android",
+        "Jetpack Compose",
+        "Kotlin"
+      ],
+      "image_url": "",
+      "created_at": "2026-03-05T06:51:28.170Z"
+    },
     {
       "id": 1,
       "title": "TTBoost",
