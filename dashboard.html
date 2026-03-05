@@ -203,6 +203,11 @@
                 <span class="font-medium text-sm">Project Dashboard</span>
             </div>
             <div class="flex items-center gap-4">
+                <div id="sync-status"
+                    class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold uppercase tracking-widest">
+                    <span class="size-2 rounded-full bg-red-500"></span>
+                    Local Sync: Off
+                </div>
                 <button id="export-json-btn"
                     class="bg-surface-dark border border-border-dark text-slate-100 px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 hover:border-primary transition-all">
                     <span class="material-symbols-outlined text-sm">download</span>
@@ -430,24 +435,57 @@
 
     <script>
         const ADMIN_PASSWORD = 'admin123'; // Change this!
+        const LOCAL_ADMIN_URL = 'http://localhost:3333';
         let allProjects = [];
         let techStack = [];
         let deleteTargetId = null;
+        let localAdminActive = false;
+
+        async function checkLocalAdmin() {
+            try {
+                const res = await fetch(`${LOCAL_ADMIN_URL}/save`, { method: 'OPTIONS' });
+                localAdminActive = true;
+                const status = document.getElementById('sync-status');
+                status.className = 'flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest';
+                status.innerHTML = '<span class="size-2 rounded-full bg-primary animate-pulse"></span> Local Sync: Active';
+                console.log('Local Admin Server detected');
+            } catch {
+                localAdminActive = false;
+                console.warn('Local Admin Server NOT detected. Auto-sync disabled.');
+            }
+        }
 
         async function initData() {
+            // ... (keep same initData logic for fetching from ./data/portfolio.json)
             try {
                 const res = await fetch('./data/portfolio.json');
                 if (res.ok) {
                     const data = await res.json();
                     localStorage.setItem('portfolio_profile', JSON.stringify(data.profile || {}));
                     localStorage.setItem('portfolio_projects', JSON.stringify(data.projects || []));
-                    console.log('Dashboard data initialized from portfolio.json');
                 }
-            } catch (err) {
-                console.warn('Could not fetch portfolio.json, using local state.', err);
-            }
+            } catch (err) { }
+            await checkLocalAdmin();
             loadProfile();
             loadProjects();
+        }
+
+        async function syncToLocal() {
+            if (!localAdminActive) return;
+            const data = {
+                profile: JSON.parse(localStorage.getItem('portfolio_profile') || '{}'),
+                projects: JSON.parse(localStorage.getItem('portfolio_projects') || '[]')
+            };
+            try {
+                const res = await fetch(`${LOCAL_ADMIN_URL}/save`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) console.log('✅ Auto-synced to local file');
+            } catch (err) {
+                console.error('Failed to sync to local file', err);
+            }
         }
 
         // ── localStorage helpers ─────────────────────────────────────────────────
@@ -672,7 +710,7 @@
         });
 
         // ── Add / Update Project ──────────────────────────────────────────────────
-        document.getElementById('add-project-form').addEventListener('submit', (e) => {
+        document.getElementById('add-project-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
             const label = document.getElementById('submit-label');
@@ -689,6 +727,22 @@
             if (editId) {
                 const idx = projects.findIndex(p => p.id === editId);
                 if (idx !== -1) {
+                    let finalImageUrl = projects[idx].image_url;
+
+                    if (selectedImageBase64) {
+                        if (localAdminActive) {
+                            const res = await fetch(`${LOCAL_ADMIN_URL}/upload`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ fileName: `proj_${editId}`, base64: selectedImageBase64 })
+                            });
+                            const result = await res.json();
+                            if (result.url) finalImageUrl = result.url;
+                        } else {
+                            finalImageUrl = selectedImageBase64;
+                        }
+                    }
+
                     projects[idx] = {
                         ...projects[idx],
                         title,
@@ -696,25 +750,40 @@
                         link: document.getElementById('proj-link').value.trim(),
                         status: document.getElementById('proj-status').value,
                         tech_stack: [...techStack],
-                        image_url: selectedImageBase64 !== null ? selectedImageBase64 : projects[idx].image_url,
+                        image_url: finalImageUrl,
                     };
                     saveProjects(projects);
-                    showToast('✅ Project updated!', 'success');
+                    await syncToLocal();
+                    showToast(localAdminActive ? '✅ Project updated & saved to disk!' : '✅ Project updated locally!', 'success');
                 }
             } else {
+                const newId = nextId(projects);
+                let finalImageUrl = selectedImageBase64 || '';
+
+                if (selectedImageBase64 && localAdminActive) {
+                    const res = await fetch(`${LOCAL_ADMIN_URL}/upload`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ fileName: `proj_${newId}`, base64: selectedImageBase64 })
+                    });
+                    const result = await res.json();
+                    if (result.url) finalImageUrl = result.url;
+                }
+
                 const newProject = {
-                    id: nextId(projects),
+                    id: newId,
                     title,
                     description: document.getElementById('proj-desc').value.trim(),
                     link: document.getElementById('proj-link').value.trim(),
                     status: document.getElementById('proj-status').value,
                     tech_stack: [...techStack],
-                    image_url: selectedImageBase64 || '',
+                    image_url: finalImageUrl,
                     created_at: new Date().toISOString(),
                 };
                 projects.unshift(newProject);
                 saveProjects(projects);
-                showToast('✅ Project deployed to portfolio!', 'success');
+                await syncToLocal();
+                showToast(localAdminActive ? '✅ Deployed & saved to disk!' : '✅ Deployed to local browser!', 'success');
             }
 
             resetForm();
@@ -780,11 +849,12 @@
             document.getElementById('delete-modal').classList.remove('flex');
         }
 
-        document.getElementById('confirm-delete-btn').addEventListener('click', () => {
+        document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
             if (!deleteTargetId) return;
             const projects = getProjects().filter(p => p.id !== deleteTargetId);
             saveProjects(projects);
-            showToast('✅ Project removed from portfolio.', 'success');
+            await syncToLocal();
+            showToast('✅ Project removed.', 'success');
             loadProjects();
             closeDeleteModal();
         });

@@ -1,41 +1,70 @@
 {
-    "profile": {
-        "name": "Your Name",
-        "role": "Android Developer",
-        "bio": "Passionate Android developer building high-performance mobile apps with Kotlin and Jetpack Compose.",
-        "email": "",
-        "github": "",
-        "linkedin": "",
-        "twitter": "",
-        "avatar_url": "",
-        "resume_url": ""
+  "profile": {
+    "name": "Sk Noman",
+    "role": "Android Developer",
+    "bio": "Building amazing Android apps",
+    "email": "",
+    "github": "",
+    "linkedin": "",
+    "twitter": "",
+    "resume_url": ""
+  },
+  "projects": [
+    {
+      "id": 5,
+      "title": "Image Sync App",
+      "description": "Checking disk image upload",
+      "link": "",
+      "status": "LIVE",
+      "tech_stack": [],
+      "image_url": "",
+      "created_at": "2026-03-05T05:01:26.239Z"
     },
-    "projects": [
-        {
-            "id": 1,
-            "title": "CyberFit App",
-            "description": "AI-driven workout tracker with real-time biometric analysis via wearable integration.",
-            "tech_stack": [
-                "Kotlin",
-                "Compose"
-            ],
-            "link": "",
-            "image_url": "",
-            "status": "LIVE",
-            "created_at": "2026-03-05T00:00:00.000Z"
-        },
-        {
-            "id": 2,
-            "title": "Neon Bank",
-            "description": "Encrypted digital wallet with multi-currency support and real-time transaction notifications.",
-            "tech_stack": [
-                "MVVM",
-                "Retrofit"
-            ],
-            "link": "",
-            "image_url": "",
-            "status": "LIVE",
-            "created_at": "2026-03-05T00:00:00.000Z"
-        }
-    ]
+    {
+      "id": 4,
+      "title": "Auto Sync Test",
+      "description": "Verifying direct disk save",
+      "link": "",
+      "status": "LIVE",
+      "tech_stack": [
+        "Node.js"
+      ],
+      "image_url": "",
+      "created_at": "2026-03-05T04:55:47.825Z"
+    },
+    {
+      "id": 3,
+      "title": "TTBoost",
+      "description": "fdsfa",
+      "link": "",
+      "status": "LIVE",
+      "tech_stack": [
+        "fsdf"
+      ],
+      "image_url": "",
+      "created_at": "2026-03-05T04:46:17.186Z"
+    },
+    {
+      "id": 2,
+      "title": "TTBoost",
+      "description": "",
+      "link": "",
+      "status": "LIVE",
+      "tech_stack": [],
+      "image_url": "",
+      "created_at": "2026-03-05T04:46:02.435Z"
+    },
+    {
+      "id": 1,
+      "title": "Test App",
+      "description": "A test project",
+      "link": "",
+      "status": "LIVE",
+      "tech_stack": [
+        "Kotlin"
+      ],
+      "image_url": "",
+      "created_at": "2026-03-05T04:10:07.647Z"
+    }
+  ]
 }

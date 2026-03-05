@@ -138,6 +138,11 @@
                         class="text-sm font-medium text-primary border-b-2 border-primary pb-1">Profile</a>
                 </nav>
                 <div class="flex items-center gap-4">
+                    <div id="sync-status"
+                        class="flex items-center gap-2 px-3 py-1.5 rounded bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-bold uppercase tracking-widest">
+                        <span class="size-1.5 rounded-full bg-red-500"></span>
+                        Sync: Off
+                    </div>
                     <button id="export-json-btn"
                         class="bg-neutral-dark border border-border-dark text-slate-100 px-4 py-2 rounded text-xs font-bold uppercase tracking-widest hover:border-primary transition-all flex items-center gap-2">
                         <span class="material-symbols-outlined text-sm">download</span>
@@ -390,13 +395,19 @@
 
     <script>
         const ADMIN_PASSWORD = 'admin123'; // Change this!
+        const LOCAL_ADMIN_URL = 'http://localhost:3333';
+        let localAdminActive = false;
 
-        // ── localStorage helpers ───────────────────────────────────────────────────────
-        function getProfile() {
-            try { return JSON.parse(localStorage.getItem('portfolio_profile') || '{}'); } catch { return {}; }
-        }
-        function saveProfile(data) {
-            localStorage.setItem('portfolio_profile', JSON.stringify(data));
+        async function checkLocalAdmin() {
+            try {
+                const res = await fetch(`${LOCAL_ADMIN_URL}/save`, { method: 'OPTIONS' });
+                localAdminActive = true;
+                const status = document.getElementById('sync-status');
+                status.className = 'flex items-center gap-2 px-3 py-1.5 rounded bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest';
+                status.innerHTML = '<span class="size-1.5 rounded-full bg-primary animate-pulse"></span> Sync: Active';
+            } catch {
+                localAdminActive = false;
+            }
         }
 
         async function initData() {
@@ -406,12 +417,27 @@
                     const data = await res.json();
                     localStorage.setItem('portfolio_profile', JSON.stringify(data.profile || {}));
                     localStorage.setItem('portfolio_projects', JSON.stringify(data.projects || []));
-                    console.log('Profile editor initialized from portfolio.json');
                 }
-            } catch (err) {
-                console.warn('Could not fetch portfolio.json, using local state.', err);
-            }
+            } catch (err) { }
+            await checkLocalAdmin();
             loadProfile();
+        }
+
+        async function syncToLocal() {
+            if (!localAdminActive) return;
+            const data = {
+                profile: JSON.parse(localStorage.getItem('portfolio_profile') || '{}'),
+                projects: JSON.parse(localStorage.getItem('portfolio_projects') || '[]')
+            };
+            try {
+                await fetch(`${LOCAL_ADMIN_URL}/save`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            } catch (err) {
+                console.error('Local sync failed', err);
+            }
         }
 
         // ── Auth ────────────────────────────────────────────────────────────────────────
@@ -510,7 +536,7 @@
         }
 
         // ── Save Profile ─────────────────────────────────────────────────────────────────
-        function doSaveProfile() {
+        async function doSaveProfile() {
             const btn1 = document.getElementById('save-btn');
             const btn2 = document.getElementById('save-btn-bottom');
             const label = document.getElementById('save-btn-label');
@@ -519,7 +545,7 @@
 
             const existing = getProfile();
             const payload = {
-                ...existing, // keep avatar_url that was set separately
+                ...existing,
                 name: document.getElementById('prof-name').value.trim(),
                 role: document.getElementById('prof-role').value.trim(),
                 bio: document.getElementById('prof-bio').value.trim(),
@@ -531,7 +557,8 @@
             };
 
             saveProfile(payload);
-            showToast('✅ Profile updated successfully!', 'success');
+            await syncToLocal();
+            showToast(localAdminActive ? '✅ Profile updated & saved to disk!' : '✅ Profile updated locally!', 'success');
 
             label.textContent = 'Save Profile';
             btn1.disabled = btn2.disabled = false;
@@ -555,19 +582,37 @@
         });
         avatarInput.addEventListener('change', (e) => { if (e.target.files[0]) handleAvatar(e.target.files[0]); });
 
-        function handleAvatar(file) {
+        async function handleAvatar(file) {
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 const base64 = e.target.result;
-                // Update previews immediately
-                document.getElementById('avatar-preview').src = base64;
-                document.getElementById('preview-avatar').src = base64;
-                document.getElementById('header-avatar').src = base64;
-                // Persist into profile in localStorage
+                let finalAvatarUrl = base64;
+
+                if (localAdminActive) {
+                    try {
+                        const res = await fetch(`${LOCAL_ADMIN_URL}/upload`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ fileName: 'avatar', base64: base64 })
+                        });
+                        const result = await res.json();
+                        if (result.url) finalAvatarUrl = result.url;
+                    } catch (err) {
+                        console.error('Avatar upload failed', err);
+                    }
+                }
+
+                // Update previews
+                document.getElementById('avatar-preview').src = finalAvatarUrl;
+                document.getElementById('preview-avatar').src = finalAvatarUrl;
+                document.getElementById('header-avatar').src = finalAvatarUrl;
+
+                // Persist
                 const profile = getProfile();
-                profile.avatar_url = base64;
+                profile.avatar_url = finalAvatarUrl;
                 saveProfile(profile);
-                showToast('✅ Profile photo updated!', 'success');
+                await syncToLocal();
+                showToast(localAdminActive ? '✅ Photo updated & saved to disk!' : '✅ Photo updated locally!', 'success');
             };
             reader.readAsDataURL(file);
         }
