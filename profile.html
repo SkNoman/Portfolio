@@ -138,6 +138,11 @@
                         class="text-sm font-medium text-primary border-b-2 border-primary pb-1">Profile</a>
                 </nav>
                 <div class="flex items-center gap-4">
+                    <button id="export-json-btn"
+                        class="bg-neutral-dark border border-border-dark text-slate-100 px-4 py-2 rounded text-xs font-bold uppercase tracking-widest hover:border-primary transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">download</span>
+                        Export JSON
+                    </button>
                     <button id="save-btn"
                         class="flex items-center gap-2 px-5 py-2 bg-primary text-background-dark text-sm font-bold uppercase tracking-wider hover:bg-white transition-all rounded">
                         <span class="material-symbols-outlined text-sm">save</span>
@@ -394,11 +399,26 @@
             localStorage.setItem('portfolio_profile', JSON.stringify(data));
         }
 
+        async function initData() {
+            try {
+                const res = await fetch('./data/portfolio.json');
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('portfolio_profile', JSON.stringify(data.profile || {}));
+                    localStorage.setItem('portfolio_projects', JSON.stringify(data.projects || []));
+                    console.log('Profile editor initialized from portfolio.json');
+                }
+            } catch (err) {
+                console.warn('Could not fetch portfolio.json, using local state.', err);
+            }
+            loadProfile();
+        }
+
         // ── Auth ────────────────────────────────────────────────────────────────────────
         function checkAuth() {
             if (sessionStorage.getItem('portfolio_admin') === 'true') {
                 document.getElementById('auth-overlay').style.display = 'none';
-                loadProfile();
+                initData();
             }
         }
 
@@ -407,7 +427,7 @@
             if (val === ADMIN_PASSWORD) {
                 sessionStorage.setItem('portfolio_admin', 'true');
                 document.getElementById('auth-overlay').style.display = 'none';
-                loadProfile();
+                initData();
             } else {
                 document.getElementById('auth-error').classList.remove('hidden');
                 document.getElementById('auth-input').classList.add('border-red-500');
@@ -551,6 +571,22 @@
             };
             reader.readAsDataURL(file);
         }
+
+        // ── Export JSON ──────────────────────────────────────────────────────────
+        document.getElementById('export-json-btn').addEventListener('click', () => {
+            const data = {
+                profile: JSON.parse(localStorage.getItem('portfolio_profile') || '{}'),
+                projects: JSON.parse(localStorage.getItem('portfolio_projects') || '[]')
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'portfolio.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('✅ portfolio.json downloaded! Replace the file in data/ folder and push to GitHub.', 'success');
+        });
 
         // ── Init ────────────────────────────────────────────────────────────────────────
         checkAuth();

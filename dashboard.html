@@ -203,6 +203,11 @@
                 <span class="font-medium text-sm">Project Dashboard</span>
             </div>
             <div class="flex items-center gap-4">
+                <button id="export-json-btn"
+                    class="bg-surface-dark border border-border-dark text-slate-100 px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 hover:border-primary transition-all">
+                    <span class="material-symbols-outlined text-sm">download</span>
+                    Export JSON
+                </button>
                 <button onclick="scrollToAddForm()"
                     class="bg-primary text-background-dark px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 hover:shadow-[0_0_15px_rgba(40,255,20,0.4)] transition-all">
                     <span class="material-symbols-outlined text-sm">add</span>
@@ -428,6 +433,22 @@
         let allProjects = [];
         let techStack = [];
         let deleteTargetId = null;
+
+        async function initData() {
+            try {
+                const res = await fetch('./data/portfolio.json');
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('portfolio_profile', JSON.stringify(data.profile || {}));
+                    localStorage.setItem('portfolio_projects', JSON.stringify(data.projects || []));
+                    console.log('Dashboard data initialized from portfolio.json');
+                }
+            } catch (err) {
+                console.warn('Could not fetch portfolio.json, using local state.', err);
+            }
+            loadProfile();
+            loadProjects();
+        }
 
         // ── localStorage helpers ─────────────────────────────────────────────────
         function getProjects() {
@@ -773,10 +794,25 @@
             document.getElementById('add-form-section').scrollIntoView({ behavior: 'smooth' });
         }
 
+        // ── Export JSON ──────────────────────────────────────────────────────────
+        document.getElementById('export-json-btn').addEventListener('click', () => {
+            const data = {
+                profile: JSON.parse(localStorage.getItem('portfolio_profile') || '{}'),
+                projects: JSON.parse(localStorage.getItem('portfolio_projects') || '[]')
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'portfolio.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('✅ portfolio.json downloaded! Replace the file in data/ folder and push to GitHub.', 'success');
+        });
+
         // ── Init ──────────────────────────────────────────────────────────────────
         function init() {
-            loadProfile();
-            loadProjects();
+            initData();
         }
 
         checkAuth();

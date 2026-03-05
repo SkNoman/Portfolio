@@ -1,0 +1,41 @@
+{
+    "profile": {
+        "name": "Your Name",
+        "role": "Android Developer",
+        "bio": "Passionate Android developer building high-performance mobile apps with Kotlin and Jetpack Compose.",
+        "email": "",
+        "github": "",
+        "linkedin": "",
+        "twitter": "",
+        "avatar_url": "",
+        "resume_url": ""
+    },
+    "projects": [
+        {
+            "id": 1,
+            "title": "CyberFit App",
+            "description": "AI-driven workout tracker with real-time biometric analysis via wearable integration.",
+            "tech_stack": [
+                "Kotlin",
+                "Compose"
+            ],
+            "link": "",
+            "image_url": "",
+            "status": "LIVE",
+            "created_at": "2026-03-05T00:00:00.000Z"
+        },
+        {
+            "id": 2,
+            "title": "Neon Bank",
+            "description": "Encrypted digital wallet with multi-currency support and real-time transaction notifications.",
+            "tech_stack": [
+                "MVVM",
+                "Retrofit"
+            ],
+            "link": "",
+            "image_url": "",
+            "status": "LIVE",
+            "created_at": "2026-03-05T00:00:00.000Z"
+        }
+    ]
+}

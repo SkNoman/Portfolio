@@ -248,7 +248,8 @@
                 </div>
                 <div>
                   <div class="flex justify-between text-[10px] font-bold uppercase tracking-widest mb-1">
-                    <span>Architecture / MVVM</span><span>85%</span></div>
+                    <span>Architecture / MVVM</span><span>85%</span>
+                  </div>
                   <div class="h-1 w-full bg-white/5">
                     <div class="h-full bg-primary" style="width:85%"></div>
                   </div>
@@ -381,8 +382,25 @@
   <div id="toast" class="toast"></div>
 
   <script>
-    // ── Static Data Layer (localStorage) ────────────────────────────────────
-    const FORMSPREE_URL = 'https://formspree.io/f/YOUR_FORM_ID'; // ← replace with your Formspree endpoint
+    // ── Static Data Layer (JSON + localStorage) ─────────────────────────────
+    const FORMSPREE_URL = 'https://formspree.io/f/YOUR_FORM_ID';
+
+    async function initData() {
+      try {
+        const res = await fetch('./data/portfolio.json');
+        if (res.ok) {
+          const data = await res.json();
+          // Sync to localStorage for other pages to see the latest GitHub data
+          localStorage.setItem('portfolio_profile', JSON.stringify(data.profile || {}));
+          localStorage.setItem('portfolio_projects', JSON.stringify(data.projects || []));
+          console.log('Data loaded from portfolio.json');
+        }
+      } catch (err) {
+        console.warn('Could not fetch portfolio.json, using local cache.', err);
+      }
+      loadProfile();
+      loadProjects();
+    }
 
     function getProfile() {
       try { return JSON.parse(localStorage.getItem('portfolio_profile') || '{}'); } catch { return {}; }
@@ -503,10 +521,9 @@
     });
 
     // ── Init ──────────────────────────────────────────────────────────────────
-    loadProfile();
-    loadProjects();
+    initData();
 
-    // Reload data when localStorage is updated from another page (dashboard/profile)
+    // Reload UI when data changes in another tab
     window.addEventListener('storage', () => { loadProfile(); loadProjects(); });
   </script>
 </body>
