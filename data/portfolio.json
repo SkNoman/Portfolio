@@ -1,8 +1,11 @@
 {
   "profile": {
     "name": "Noman",
-    "role": "Android Developer",
-    "bio": "Android Developer with 4+ years of experience specializing in Kotlin, Jetpack Compose, and modern Android architecture. Focused on building scalable, high-quality mobile apps with strong performance and user experience.",
+    "role": "Software Engineer",
+    "bio": "Android Engineer with 4+ years of experience building and shipping production applications using Kotlin, Jetpack
+Compose, and MVVM/Clean Architecture. Currently serving as Software Engineer Lead at Envobyte, leading a team
+of 5 engineers and overseeing architecture, code reviews, and release processes. Experienced in developing enterprise
+and consumer applications, with additional backend development experience using NestJS and TypeScript.",
     "email": "sknoman77@gmail.com",
     "github": "https://github.com/SkNoman",
     "linkedin": "https://bd.linkedin.com/in/sk-noman-66a663193",
@@ -10,6 +13,20 @@
     "resume_url": ""
   },
   "projects": [
+     {
+      "id": 6,
+      "title": "Automatic Background Remover",
+      "description": "Removes image backgrounds automatically with high accuracy, replacing manual masking. Supports batch processing of multiple images plus in-app editing tools.",
+      "link": "https://play.google.com/store/apps/details?id=com.automatic.background.remover",
+      "status": "LIVE",
+      "tech_stack": [
+        "Android",
+        "Jetpack Compose",
+        "Kotlin"
+      ],
+      "image_url": "",
+      "created_at": "2026-03-05T06:42:42.766Z"
+    },
     {
       "id": 5,
       "title": "TTBoost",
@@ -34,7 +51,8 @@
       "tech_stack": [
         "Android",
         "Jetpack Compose",
-        "Kotlin"
+        "Kotlin",
+        "Image Processing"
       ],
       "image_url": "",
       "created_at": "2026-03-05T06:51:28.170Z"
@@ -47,7 +65,7 @@
       "status": "LIVE",
       "tech_stack": [
         "Android",
-        "ML Kit",
+        "MLKit",
         "Kotlin",
         "Jetpack Compose"
       ],
